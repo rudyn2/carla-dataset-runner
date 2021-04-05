@@ -1,12 +1,86 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a41a94bc-a677-4b27-9044-cbb0c43d576e" name="Default Changelist" comment="">
+    <list default="true" id="a41a94bc-a677-4b27-9044-cbb0c43d576e" name="Default Changelist" comment="adds PythonAPI, new PoC Jupyter Notebooks">
+      <changelist_data name="Rudy" email="" />
+      <change afterPath="$PROJECT_DIR$/playground/.ipynb_checkpoints/__init__-checkpoint.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/.ipynb_checkpoints/minimal_code-checkpoint.ipynb" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/.ipynb_checkpoints/simple_autopilot-checkpoint.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/.ipynb_checkpoints/test_hdf5_dataset-checkpoint.ipynb" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/carla/.ipynb_checkpoints/scene_layout-checkpoint.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/carla/agents/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/carla/agents/navigation/.ipynb_checkpoints/behavior_agent-checkpoint.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/carla/agents/navigation/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/carla/agents/navigation/agent.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/carla/agents/navigation/basic_agent.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/carla/agents/navigation/behavior_agent.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/carla/agents/navigation/controller.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/carla/agents/navigation/global_route_planner.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/carla/agents/navigation/global_route_planner_dao.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/carla/agents/navigation/local_planner.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/carla/agents/navigation/local_planner_behavior.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/carla/agents/navigation/roaming_agent.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/carla/agents/navigation/types_behavior.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/carla/agents/tools/.ipynb_checkpoints/misc-checkpoint.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/carla/agents/tools/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/carla/agents/tools/misc.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/carla/dist/carla-0.9.11-py2.7-linux-x86_64.egg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/carla/dist/carla-0.9.11-py3.7-linux-x86_64.egg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/carla/requirements.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/carla/scene_layout.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/examples/automatic_control.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/examples/client_bounding_boxes.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/examples/dynamic_weather.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/examples/lidar_to_camera.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/examples/manual_control.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/examples/manual_control_carsim.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/examples/manual_control_steeringwheel.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/examples/no_rendering_mode.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/examples/open3d_lidar.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/examples/requirements.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/examples/rss/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/examples/rss/manual_control_rss.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/examples/rss/rss_sensor.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/examples/rss/rss_visualization.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/examples/sensor_synchronization.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/examples/show_recorder_actors_blocked.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/examples/show_recorder_collisions.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/examples/show_recorder_file_info.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/examples/spawn_npc.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/examples/start_recording.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/examples/start_replaying.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/examples/synchronous_mode.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/examples/tutorial.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/examples/vehicle_gallery.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/examples/vehicle_physics.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/python_api.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/util/.ipynb_checkpoints/config-checkpoint.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/util/.ipynb_checkpoints/performance_benchmark-checkpoint.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/util/.ipynb_checkpoints/raycast_sensor_testing-checkpoint.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/util/.ipynb_checkpoints/test_connection-checkpoint.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/util/check_collisions_substepping.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/util/check_raycast_sensors_determinism.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/util/config.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/util/environment.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/util/lane_explorer.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/util/opendrive/TownBig.xodr" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/util/performance_benchmark.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/util/raycast_sensor_testing.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/util/requirements.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/PythonAPI/util/test_connection.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/minimal_code.ipynb" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/simple_autopilot.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/playground/test_hdf5_dataset.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataset_collector.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataset_collector.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CarlaWorld.py" beforeDir="false" afterPath="$PROJECT_DIR$/CarlaWorld.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb_filter.py" beforeDir="false" afterPath="$PROJECT_DIR$/bb_filter.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HDF5Saver.py" beforeDir="false" afterPath="$PROJECT_DIR$/HDF5Saver.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/settings.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/utils/create_video_on_hdf5/create_content_on_hdf5.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/create_video_on_hdf5/create_content_on_hdf5.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/spawn_single_npc_test/spawn_desired_car.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/spawn_single_npc_test/spawn_desired_car.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,24 +95,40 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="PREVIOUS_COMMIT_AUTHORS">
+      <list>
+        <option value="Rudy" />
+      </list>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectId" id="1SBlCkFBsI1num67FBw1HPPOBnX" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
-    <option name="showExcludedFiles" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/utils/test_bb_filter" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="restartRequiresConfirmation" value="false" />
-    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
-  <component name="RunManager" selected="Python.test_bb_filter">
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Python.main">
     <configuration name="CarlaWorld" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="dataset_collector" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -51,6 +141,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/CarlaWorld.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
@@ -72,6 +163,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/utils/hdf5_check/check_hdf5_file.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
@@ -93,8 +185,9 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
-      <option name="PARAMETERS" value="" />
+      <option name="PARAMETERS" value="test -ve 10" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -114,6 +207,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/utils/spawn_single_npc_test/spawn_desired_car.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
@@ -135,6 +229,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/utils/test_bb_filter/test_bb_filter.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
@@ -144,12 +239,19 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <list>
+      <item itemvalue="Python.CarlaWorld" />
+      <item itemvalue="Python.check_hdf5_file (1)" />
+      <item itemvalue="Python.main" />
+      <item itemvalue="Python.spawn_desired_car" />
+      <item itemvalue="Python.test_bb_filter" />
+    </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.main" />
         <item itemvalue="Python.test_bb_filter" />
         <item itemvalue="Python.spawn_desired_car" />
         <item itemvalue="Python.CarlaWorld" />
-        <item itemvalue="Python.main" />
         <item itemvalue="Python.check_hdf5_file (1)" />
       </list>
     </recent_temporary>
@@ -166,6 +268,7 @@
       </list>
     </option>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -176,6 +279,13 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1571044743076</updated>
+      <workItem from="1617114848556" duration="1526000" />
+      <workItem from="1617117131335" duration="122000" />
+      <workItem from="1617203050076" duration="16000" />
+      <workItem from="1617309392697" duration="1824000" />
+      <workItem from="1617393821933" duration="8079000" />
+      <workItem from="1617458354138" duration="2704000" />
+      <workItem from="1617637233498" duration="199000" />
     </task>
     <task id="LOCAL-00001" summary="Fixed file namesaving format for computer local timestamp.&#10;FIxed depth information file save type to numpy array.">
       <created>1572450796538</created>
@@ -201,72 +311,35 @@
     <option name="localTasksCounter" value="4" />
     <servers />
   </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
       <map>
         <entry key="MAIN">
           <value>
-            <State>
-              <option name="COLUMN_ORDER" />
-            </State>
+            <State />
           </value>
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
+    <option name="CHECK_CODE_CLEANUP_BEFORE_PROJECT_COMMIT" value="true" />
     <MESSAGE value="Fixed file namesaving format for computer local timestamp.&#10;FIxed depth information file save type to numpy array." />
     <MESSAGE value="Implemented scratch of bounding box ground truth generation via RGB &#10;cameras. Set simulation mode to synchronous" />
-    <option name="LAST_COMMIT_MESSAGE" value="Implemented scratch of bounding box ground truth generation via RGB &#10;cameras. Set simulation mode to synchronous" />
-  </component>
-  <component name="WindowStateProjectService">
-    <state x="2563" y="282" width="424" height="484" key="FileChooserDialogImpl" timestamp="1576020576213">
-      <screen x="1920" y="0" width="1680" height="1050" />
-    </state>
-    <state x="2563" y="282" key="FileChooserDialogImpl/1920.0.1680.1050/0.285.1920.1080@1920.0.1680.1050" timestamp="1576020576213" />
-    <state x="776" y="310" width="424" height="484" key="FileChooserDialogImpl/67.27.1853.1053@67.27.1853.1053" timestamp="1575624067685" />
-    <state width="1590" height="318" key="GridCell.Tab.0.bottom" timestamp="1576020579533">
-      <screen x="1920" y="0" width="1680" height="1050" />
-    </state>
-    <state width="1590" height="318" key="GridCell.Tab.0.bottom/1920.0.1680.1050/0.285.1920.1080@1920.0.1680.1050" timestamp="1576020579533" />
-    <state width="1590" height="318" key="GridCell.Tab.0.center" timestamp="1576020579533">
-      <screen x="1920" y="0" width="1680" height="1050" />
-    </state>
-    <state width="1590" height="318" key="GridCell.Tab.0.center/1920.0.1680.1050/0.285.1920.1080@1920.0.1680.1050" timestamp="1576020579533" />
-    <state width="1590" height="318" key="GridCell.Tab.0.left" timestamp="1576020579533">
-      <screen x="1920" y="0" width="1680" height="1050" />
-    </state>
-    <state width="1590" height="318" key="GridCell.Tab.0.left/1920.0.1680.1050/0.285.1920.1080@1920.0.1680.1050" timestamp="1576020579533" />
-    <state width="1590" height="318" key="GridCell.Tab.0.right" timestamp="1576020579533">
-      <screen x="1920" y="0" width="1680" height="1050" />
-    </state>
-    <state width="1590" height="318" key="GridCell.Tab.0.right/1920.0.1680.1050/0.285.1920.1080@1920.0.1680.1050" timestamp="1576020579533" />
-    <state width="1590" height="318" key="GridCell.Tab.1.bottom" timestamp="1576020579533">
-      <screen x="1920" y="0" width="1680" height="1050" />
-    </state>
-    <state width="1590" height="318" key="GridCell.Tab.1.bottom/1920.0.1680.1050/0.285.1920.1080@1920.0.1680.1050" timestamp="1576020579533" />
-    <state width="1590" height="318" key="GridCell.Tab.1.center" timestamp="1576020579533">
-      <screen x="1920" y="0" width="1680" height="1050" />
-    </state>
-    <state width="1590" height="318" key="GridCell.Tab.1.center/1920.0.1680.1050/0.285.1920.1080@1920.0.1680.1050" timestamp="1576020579533" />
-    <state width="1590" height="318" key="GridCell.Tab.1.left" timestamp="1576020579533">
-      <screen x="1920" y="0" width="1680" height="1050" />
-    </state>
-    <state width="1590" height="318" key="GridCell.Tab.1.left/1920.0.1680.1050/0.285.1920.1080@1920.0.1680.1050" timestamp="1576020579533" />
-    <state width="1590" height="318" key="GridCell.Tab.1.right" timestamp="1576020579533">
-      <screen x="1920" y="0" width="1680" height="1050" />
-    </state>
-    <state width="1590" height="318" key="GridCell.Tab.1.right/1920.0.1680.1050/0.285.1920.1080@1920.0.1680.1050" timestamp="1576020579533" />
-    <state x="482" y="187" key="SettingsEditor" timestamp="1575362968256">
-      <screen x="67" y="27" width="1853" height="1053" />
-    </state>
-    <state x="482" y="187" key="SettingsEditor/67.27.1853.1053@67.27.1853.1053" timestamp="1575362968256" />
+    <MESSAGE value="adds PythonAPI, new PoC Jupyter Notebooks" />
+    <option name="LAST_COMMIT_MESSAGE" value="adds PythonAPI, new PoC Jupyter Notebooks" />
+    <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
+    <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/../../Waymo/read_tfrecord.py</url>
+          <url>file://$USER_HOME$/Waymo/read_tfrecord.py</url>
           <line>12</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
@@ -282,5 +355,8 @@
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/carla_dataset_runner$main.coverage" NAME="main Coverage Results" MODIFIED="1617400378940" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
