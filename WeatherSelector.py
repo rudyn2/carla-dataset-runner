@@ -3,10 +3,11 @@ Defines a few custom weather presets. Up until version 0.9.6, carla has a few na
 setup they don't seem to differ that much one from another
 """
 import sys
-import os
+
 import settings
+
 sys.path.append(settings.CARLA_EGG_PATH)
-import carla
+
 
 # https://carla.readthedocs.io/en/latest/python_api/#carlaweatherparameters-class
 class WeatherSelector:
@@ -37,7 +38,7 @@ class WeatherSelector:
         self.precipitation_deposits = 60.0
         self.wind_intensity = 30.0
         self.sun_azimuth_angle = 00.0
-        self.sun_altitude_angle = 80#80.0  # 45
+        self.sun_altitude_angle = 80  # 80.0  # 45
         return [self.cloudiness, self.precipitation, self.precipitation_deposits, self.wind_intensity,
                 self.sun_azimuth_angle, self.sun_altitude_angle]
 
@@ -70,4 +71,3 @@ class WeatherSelector:
         self.sun_altitude_angle = -60.0
         return [self.cloudiness, self.precipitation, self.precipitation_deposits, self.wind_intensity,
                 self.sun_azimuth_angle, self.sun_altitude_angle]
-

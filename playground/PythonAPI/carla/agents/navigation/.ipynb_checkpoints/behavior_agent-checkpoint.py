@@ -19,6 +19,7 @@ from agents.navigation.global_route_planner_dao import GlobalRoutePlannerDAO
 from agents.navigation.local_planner_behavior import LocalPlanner, RoadOption
 from agents.navigation.types_behavior import Cautious, Aggressive, Normal
 from agents.tools.misc import get_speed, positive
+from agents.tools.vehicle_position import get_vehicle_position, get_vehicle_orientation
 
 
 class BehaviorAgent(Agent):
@@ -112,10 +113,17 @@ class BehaviorAgent(Agent):
             traffic_light = self.vehicle.get_traffic_light()
             x = self.vehicle.get_location().x - traffic_light.get_location().x
             y = self.vehicle.get_location().y - traffic_light.get_location().y
-            distance = math.sqrt(x*x + y*y)
+            distance = math.sqrt(x * x + y * y)
             state = str(self.vehicle.get_traffic_light_state())
             return is_at_traffic_light, state, distance
         return is_at_traffic_light, None, None
+
+    def get_vehicle_location_and_orientation(self):
+
+        position = get_vehicle_position(self._map, self.vehicle)
+        orientation = get_vehicle_orientation(self._map, self.vehicle)
+
+        return position, orientation
 
     def set_destination(self, start_location, end_location, clean=False):
         """
@@ -441,16 +449,25 @@ class BehaviorAgent(Agent):
                 target_speed= min(self.behavior.max_speed, self.speed_limit - self.behavior.speed_lim_dist), debug=debug)
 
         return control
-    
+
     def run_step_with_info(self):
-        
-        # ego information
+
+        # ego control
         control = self.run_step()
-        command = self.direction
-        ego_vehicle_wp = self._map.get_waypoint(self.vehicle.get_location())
-        is_junction = ego_vehicle_wp.is_junction
-        
-        # traffic light information
-        iatl, state, distance = self.get_traffic_light_information()
-        
-        return control, command, ego_vehicle_wp, self.speed, self.speed_limit, is_junction, iatl, state, distance
+
+        # traffic light & lane information
+        iatl, tl_state, tl_distance = self.get_traffic_light_information()
+        lane_distance, lane_orientation = self.get_vehicle_location_and_orientation()
+
+        return {
+            "control": control,
+            "command": self.direction,
+            "speed": self.speed,
+            "speed_limit": self.speed_limit,
+            "at_tl": iatl,
+            "tl_state": tl_state,
+            "tl_distance": tl_distance,
+            "lane_distance": lane_distance,
+            "lane_orientation": lane_orientation
+
+        }
