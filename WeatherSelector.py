@@ -22,6 +22,15 @@ class WeatherSelector:
     def get_weather_options(self):
         return [self.morning(), self.midday(), self.afternoon(), self.default(), self.almost_night()]
 
+    def get_weather_lookup(self):
+        return {
+            0: "morning",
+            1: "midday",
+            2: "afternoon",
+            3: "default",
+            4: "almostnight"
+        }
+
     def morning(self):
         self.cloudiness = 20.0
         self.precipitation = 90.0
