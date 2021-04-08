@@ -28,6 +28,8 @@ from set_synchronous_mode import CarlaSyncMode
 from WeatherSelector import WeatherSelector
 
 from agents.navigation.behavior_agent import BehaviorAgent
+from agents.navigation.global_route_planner import GlobalRoutePlanner
+from agents.navigation.global_route_planner_dao import GlobalRoutePlannerDAO
 
 
 def parse_control(c):
@@ -45,15 +47,19 @@ def parse_control(c):
     }
 
 
+class CantSpawnEgoError(Exception):
+    pass
+
+
 class CarlaWorld:
-    def __init__(self, hdf5_file, world='Town02'):
+    def __init__(self, hdf5_file, town='Town02'):
         self.HDF5_file = hdf5_file
-        self.world_tag = world
+        self.world_tag = town
 
         # Carla initialization
         self.client = carla.Client('localhost', 2000)
         self.client.set_timeout(20.0)
-        self.client.load_world(world)
+        self.client.load_world(town)
         self.world = self.client.get_world()
 
         print('Successfully connected to CARLA')
@@ -169,27 +175,116 @@ class CarlaWorld:
         img = img[:, :, 2]  # taking just the RED channel
         return img
 
+    @staticmethod
+    def compute_distance(loc1, loc2):
+        dx = loc1.x - loc2.x
+        dy = loc1.y - loc2.y
+        return np.sqrt(dx * dx + dy * dy)
+
     def remove_sensors(self):
         for sensor in self.sensors_list:
             sensor.destroy()
         self.sensors_list = []
 
-    def set_ego_agent(self, vehicle):
+    def set_ego_agent(self, route=None, debug: bool = False):
 
-        ego_agent = BehaviorAgent(vehicle)
-        spawn_points = self.map.get_spawn_points()
-        random.shuffle(spawn_points)
-        if spawn_points[0].location != ego_agent.vehicle.get_location():
-            destination = spawn_points[0].location
+        if route is None:
+
+            # These vehicles are not considered because
+            # the cameras get occluded without changing their absolute position
+            ego_vehicle = random.choice([x for x in self.world.get_actors().filter("vehicle.*") if x.type_id not in
+                                         ['vehicle.audi.tt', 'vehicle.carlamotors.carlacola', 'vehicle.volkswagen.t2']])
+            ego_agent = BehaviorAgent(ego_vehicle)
+
+            spawn_points = self.map.get_spawn_points()
+            random.shuffle(spawn_points)
+            if spawn_points[0].location != ego_agent.vehicle.get_location():
+                destination = spawn_points[0].location
+            else:
+                destination = spawn_points[1].location
+            ego_agent.set_destination(ego_agent.vehicle.get_location(), destination, clean=True)
+
         else:
-            destination = spawn_points[1].location
-        ego_agent.set_destination(ego_agent.vehicle.get_location(), destination, clean=True)
+            vehicle_bp = self.blueprint_library.find('vehicle.tesla.model3')
+            dense_route = self.interpolate_trajectory(route, hop_resolution=1.0)
+            if debug:
+                # 2.2 Draw waypoints
+                for i, t in enumerate(dense_route):
+                    self.world.debug.draw_string(t[0].transform.location, str(i), draw_shadow=False,
+                                                 color=carla.Color(r=255, g=0, b=0), life_time=30,
+                                                 persistent_lines=True)
+
+            not_spawned = True
+            route_p_spawn = 0
+            while not_spawned:
+                try:
+                    start_wp = self.map.get_waypoint(dense_route[route_p_spawn][0].transform.location)
+                    point_to_spawn = self.find_closest_point_to_spawn(start_wp)
+                    ego_vehicle = self.world.spawn_actor(vehicle_bp, point_to_spawn)
+                    not_spawned = False
+                except RuntimeError:
+                    route_p_spawn += 1
+                except IndexError:
+                    raise CantSpawnEgoError("Couldn't spawn ego for provided route")
+
+            ego_agent = BehaviorAgent(ego_vehicle)
+            ego_agent.set_predefined_route(dense_route)
+
         ego_agent.update_information()
         print("Behavior Agent has been set up successfully")
-        return ego_agent
+        return ego_vehicle, ego_agent
+
+    def find_closest_point_to_spawn(self, wp):
+
+        closest_points = []
+        for p in self.map.get_spawn_points():
+            distance = self.compute_distance(wp.transform.location, p.location)
+            if distance < 10:
+                closest_points.append((p, distance))
+
+        sorted_closest_points = sorted(closest_points, key=lambda p: p[1])
+        closest_points = [p[0] for p in sorted_closest_points]
+
+        closest_valid_point = None
+        for p in closest_points:
+            wp_p = self.map.get_waypoint(p.location)
+            if wp_p.lane_id == wp.lane_id:
+                closest_valid_point = p
+
+        if closest_valid_point is None:
+            raise RuntimeError("Can't find valid point to spawn ego vehicle")
+
+        return closest_valid_point
+
+    def interpolate_trajectory(self, waypoints_trajectory, hop_resolution=1.0):
+        """
+        Given some raw keypoints interpolate a full dense trajectory to be used by the user.
+        returns the full interpolated route both in GPS coordinates and also in its original form.
+
+        Args:
+            - world: an reference to the CARLA world so we can use the planner
+            - waypoints_trajectory: the current coarse trajectory
+            - hop_resolution: is the resolution, how dense is the provided trajectory going to be made
+        """
+
+        dao = GlobalRoutePlannerDAO(self.world.get_map(), hop_resolution)
+        grp = GlobalRoutePlanner(dao)
+        grp.setup()
+        # Obtain route plan
+        route = []
+        for i in range(len(waypoints_trajectory) - 1):  # Goes until the one before the last.
+
+            waypoint = waypoints_trajectory[i]
+            waypoint_next = waypoints_trajectory[i + 1]
+            interpolated_trace = grp.trace_route(waypoint, waypoint_next)
+
+            for wp_tuple in interpolated_trace:
+                route.append((wp_tuple[0], wp_tuple[1]))
+
+        return route
 
     def begin_data_acquisition(self, sensor_width, sensor_height, fov, frames_to_record_one_ego=300,
-                               debug: bool = False):
+                               route=None, debug: bool = False):
         """
         Records data using one ego for 'frames_to_record_one_ego' frames.
         """
@@ -199,11 +294,9 @@ class CarlaWorld:
         current_ego_recorded_frames = 0
         media_data = []
         info_data = []
-        # These vehicles are not considered because the cameras get occluded without changing their absolute position
-        ego_vehicle = random.choice([x for x in self.world.get_actors().filter("vehicle.*") if x.type_id not in
-                                     ['vehicle.audi.tt', 'vehicle.carlamotors.carlacola', 'vehicle.volkswagen.t2']])
 
-        ego_agent = self.set_ego_agent(ego_vehicle)
+        ego_vehicle, ego_agent = self.set_ego_agent(route, debug)
+        ego_reached_destination = False
 
         print(f"Using ego: {ego_vehicle.type_id}")
         self.put_rgb_sensor(ego_vehicle, sensor_width, sensor_height, fov)
@@ -219,7 +312,7 @@ class CarlaWorld:
 
             progress_bar = tqdm(total=frames_to_record_one_ego)
             while True:
-                if current_ego_recorded_frames == frames_to_record_one_ego:
+                if current_ego_recorded_frames == frames_to_record_one_ego or ego_reached_destination:
                     progress_bar.close()
                     print(f"Recorded {current_ego_recorded_frames} frames for actual ego")
                     self.remove_sensors()
@@ -228,7 +321,7 @@ class CarlaWorld:
                 # Advance the simulation and wait for the data
                 # Skip every nth frame for data recording, so that one frame is not that similar to another
                 wait_frame_ticks = 0
-                while wait_frame_ticks < 5:
+                while wait_frame_ticks < 1:
                     sync_mode.tick_no_data()
 
                     wait_frame_ticks += 1
@@ -251,6 +344,10 @@ class CarlaWorld:
                 ego_info = ego_agent.run_step_with_info()
                 ego_vehicle.apply_control(ego_info["control"])
                 ego_agent.update_information()
+
+                if self.compute_distance(ego_vehicle.get_transform().location, route[-1]) < 10:
+                    print("Ego has reached destination successfully")
+                    ego_reached_destination = True
 
                 # save data
                 ego_info["control"] = parse_control(ego_info["control"])

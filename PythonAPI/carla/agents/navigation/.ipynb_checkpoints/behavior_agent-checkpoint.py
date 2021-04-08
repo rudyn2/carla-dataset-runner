@@ -143,6 +143,12 @@ class BehaviorAgent(Agent):
 
         self._local_planner.set_global_plan(route_trace, clean)
 
+    def set_predefined_route(self, route, clean=False):
+
+        if clean:
+            self._local_planner.waypoints_queue.clear()
+        self._local_planner.set_global_plan(route)
+
     def reroute(self, spawn_points):
         """
         This method implements re-routing for vehicles approaching its destination.
@@ -461,6 +467,7 @@ class BehaviorAgent(Agent):
 
     def run_step_with_info(self):
 
+        ego_t = self.vehicle.get_transform()
         # ego control
         control = self.run_step()
 
@@ -470,7 +477,19 @@ class BehaviorAgent(Agent):
 
         return {
             "control": control,
-            "command": self.direction,
+            "transform": {
+                "location": {
+                    "x": ego_t.location.x,
+                    "y": ego_t.location.y,
+                    "z": ego_t.location.z
+                },
+                "rotation": {
+                    "pitch": ego_t.rotation.pitch,
+                    "yaw": ego_t.rotation.yaw,
+                    "roll": ego_t.rotation.roll
+                }
+            },
+            "command": self.direction.name,
             "speed": self.speed,
             "speed_limit": self.speed_limit,
             "at_tl": iatl,

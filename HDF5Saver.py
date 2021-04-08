@@ -1,4 +1,5 @@
 import h5py
+from tqdm import tqdm
 
 
 class HDF5Saver:
@@ -32,7 +33,7 @@ class HDF5Saver:
         ego_run_depth_group = ego_run_group.create_group("depth")
         ego_run_semantic_group = ego_run_group.create_group("semantic")
 
-        for frame_dict in media_data:
+        for frame_dict in tqdm(media_data, "Saving images "):
             # one frame dict contains rgb, depth and semantic information
             timestamp = str(frame_dict["timestamp"])
             ego_run_rgb_group.create_dataset(timestamp, data=frame_dict["rgb"], compression='gzip')

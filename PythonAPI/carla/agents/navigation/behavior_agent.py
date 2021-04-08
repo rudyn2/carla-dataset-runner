@@ -143,6 +143,15 @@ class BehaviorAgent(Agent):
 
         self._local_planner.set_global_plan(route_trace, clean)
 
+    def set_predefined_route(self, route, clean=False):
+        """
+        Route: list of (waypoint, RoadOption)
+        """
+
+        if clean:
+            self._local_planner.waypoints_queue.clear()
+        self._local_planner.set_global_plan(route)
+
     def reroute(self, spawn_points):
         """
         This method implements re-routing for vehicles approaching its destination.
