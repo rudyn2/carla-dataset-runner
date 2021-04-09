@@ -59,6 +59,7 @@ def main(file_path: str, metadata: str):
     print(f"The file: {file_path} contains {total_run} ego runs")
     print(f"The file contains {total_frames} frames\n")
 
+    ego_info = None
     if metadata is not None and os.path.exists(metadata):
         with open(metadata, "r+") as file:
             ego_info = json.load(file)
@@ -70,7 +71,10 @@ def main(file_path: str, metadata: str):
     opt = input("Select an option: ")
     opt = list(f.keys())[int(opt)]
     ego_run_imgs = f[opt]
-    ego_run_info = ego_info[opt]
+    if ego_info:
+        ego_run_info = ego_info[opt]
+    else:
+        ego_run_info = None
 
     timestamps = list(ego_run_imgs['rgb'].keys())
     print(f"{len(timestamps)} frames for selected record")
@@ -84,18 +88,19 @@ def main(file_path: str, metadata: str):
         cv2.imshow('depth', depth2grayscale(depth_map))
         cv2.imshow('semantic', labels_to_cityscapes_palette(semantic_map))
 
-        sys.stdout.write("\r")
-        if ego_run_info[timestamp]["at_tl"]:
-            s = f'Frame {i + 1} | {ego_run_info[timestamp]["command"]} | ' \
-                f'Light state: {ego_run_info[timestamp]["tl_state"]} | Distance to TL: {ego_run_info[timestamp]["tl_distance"]:.3f} ' \
-                f'| Speed: {ego_run_info[timestamp]["speed"]:.2f} | Distance to center: {ego_run_info[timestamp]["lane_distance"]:.3f} ' \
-                f'| Orientation: {ego_run_info[timestamp]["lane_orientation"]:.3f}'
-        else:
-            s = f'Frame {i + 1} | {ego_run_info[timestamp]["command"]} | ' \
-                f'Speed: {ego_run_info[timestamp]["speed"]:.2f} | Distance to center: {ego_run_info[timestamp]["lane_distance"]:.3f} ' \
-                f'| Orientation: {ego_run_info[timestamp]["lane_orientation"]:.3f}'
-        sys.stdout.write(s)
-        sys.stdout.flush()
+        if ego_run_info:
+            sys.stdout.write("\r")
+            if ego_run_info[timestamp]["at_tl"]:
+                s = f'Frame {i + 1} | {ego_run_info[timestamp]["command"]} | ' \
+                    f'Light state: {ego_run_info[timestamp]["tl_state"]} | Distance to TL: {ego_run_info[timestamp]["tl_distance"]:.3f} ' \
+                    f'| Speed: {ego_run_info[timestamp]["speed"]:.2f} | Distance to center: {ego_run_info[timestamp]["lane_distance"]:.3f} ' \
+                    f'| Orientation: {ego_run_info[timestamp]["lane_orientation"]:.3f}'
+            else:
+                s = f'Frame {i + 1} | {ego_run_info[timestamp]["command"]} | ' \
+                    f'Speed: {ego_run_info[timestamp]["speed"]:.2f} | Distance to center: {ego_run_info[timestamp]["lane_distance"]:.3f} ' \
+                    f'| Orientation: {ego_run_info[timestamp]["lane_orientation"]:.3f}'
+            sys.stdout.write(s)
+            sys.stdout.flush()
 
         cv2.waitKey(50)
     cv2.destroyAllWindows()

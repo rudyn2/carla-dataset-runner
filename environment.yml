@@ -115,4 +115,3 @@ dependencies:
       - scipy==1.6.2
       - tabulate==0.8.9
       - tqdm==4.60.0
-prefix: /home/rudy/miniconda3/envs/carla-data-collector

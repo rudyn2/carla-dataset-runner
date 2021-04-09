@@ -153,7 +153,7 @@ if __name__ == "__main__":
                 CarlaWorld.world_tag = routes[route_id]['town']
                 CarlaWorld.reset()
 
-                for weather_id, weather_option in enumerate(CarlaWorld.weather_options):
+                for weather_id, weather_option in enumerate(CarlaWorld.weather_options[:1]):
 
                     _id = f"run_{str(counter).zfill(3)}_{weather_lookup[weather_id]}"
                     print(f"RUN ID: {_id}")

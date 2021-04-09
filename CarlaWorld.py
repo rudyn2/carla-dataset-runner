@@ -57,7 +57,8 @@ class CarlaWorld:
         self.world_tag = town
 
         # Carla initialization
-        self.client = carla.Client('localhost', 2000)
+        self.host = '172.26.0.1'
+        self.client = carla.Client(self.host, 2000)
         self.client.set_timeout(20.0)
         self.client.load_world(town)
         self.world = self.client.get_world()
@@ -96,7 +97,7 @@ class CarlaWorld:
         print('Done destroying actors.')
 
     def spawn_npcs(self, number_of_vehicles, number_of_walkers):
-        self.NPC = NPCClass()
+        self.NPC = NPCClass(self.host)
         self.vehicles_list, _ = self.NPC.create_npcs(number_of_vehicles, number_of_walkers)
 
     def put_rgb_sensor(self, vehicle, sensor_width=640, sensor_height=480, fov=110):

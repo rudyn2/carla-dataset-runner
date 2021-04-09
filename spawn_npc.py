@@ -7,10 +7,10 @@
 # For a copy, see <https://opensource.org/licenses/MIT>.
 
 """Spawn NPCs into the simulation"""
-import glob
-import os
 import sys
+
 import settings
+
 sys.path.append(settings.CARLA_EGG_PATH)
 import carla
 import logging
@@ -18,12 +18,12 @@ import random
 
 
 class NPCClass:
-    def __init__(self):
+    def __init__(self, host: str):
         logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
         self.vehicles_list = []
         self.walkers_list = []
         self.all_id = []
-        self.client = carla.Client('127.0.0.1', 2000)
+        self.client = carla.Client(host, 2000)
         self.client.set_timeout(20.0)
 
     def create_npcs(self, number_of_vehicles=150, number_of_walkers=70):

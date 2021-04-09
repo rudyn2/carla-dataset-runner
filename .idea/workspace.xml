@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a41a94bc-a677-4b27-9044-cbb0c43d576e" name="Default Changelist" comment="add visualization script, fix counter bug, minor changes">
-      <change afterPath="$PROJECT_DIR$/playground/count_routes.py" afterDir="false" />
+    <list default="true" id="a41a94bc-a677-4b27-9044-cbb0c43d576e" name="Default Changelist" comment="reduce sampling frequency">
+      <change afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/routes/routes_training.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/scripts/run_collector.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/scripts/run_docker.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/scripts/run_docker_offscreen.sh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CarlaWorld.py" beforeDir="false" afterPath="$PROJECT_DIR$/CarlaWorld.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/environment.yml" beforeDir="false" afterPath="$PROJECT_DIR$/environment.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spawn_npc.py" beforeDir="false" afterPath="$PROJECT_DIR$/spawn_npc.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/visualize.py" beforeDir="false" afterPath="$PROJECT_DIR$/visualize.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -38,7 +45,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/PythonAPI/carla" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/routes" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -50,6 +57,7 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/routes" />
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
@@ -164,7 +172,30 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="Dockerfile" type="docker-deploy" factoryName="dockerfile" temporary="true" server-name="Docker">
+      <deployment type="dockerfile">
+        <settings>
+          <option name="imageTag" value="test_collector" />
+          <option name="buildCliOptions" value="--rm --network host " />
+          <option name="command" value="/bin/bash" />
+          <option name="containerName" value="" />
+          <option name="entrypoint" value="" />
+          <option name="commandLineOptions" value="" />
+          <option name="sourceFilePath" value="Dockerfile" />
+          <option name="volumeBindings">
+            <list>
+              <DockerVolumeBindingImpl>
+                <option name="containerPath" value="$PROJECT_DIR$/../../../carla-dataset-runner/data" />
+                <option name="hostPath" value="$PROJECT_DIR$/data" />
+              </DockerVolumeBindingImpl>
+            </list>
+          </option>
+        </settings>
+      </deployment>
+      <method v="2" />
+    </configuration>
     <list>
+      <item itemvalue="Docker.Dockerfile" />
       <item itemvalue="Python.CarlaWorld" />
       <item itemvalue="Python.main" />
       <item itemvalue="Python.spawn_desired_car" />
@@ -173,11 +204,11 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Docker.Dockerfile" />
         <item itemvalue="Python.main" />
         <item itemvalue="Python.visualize" />
         <item itemvalue="Python.test_bb_filter" />
         <item itemvalue="Python.spawn_desired_car" />
-        <item itemvalue="Python.CarlaWorld" />
       </list>
     </recent_temporary>
   </component>
@@ -217,7 +248,7 @@
       <workItem from="1617812778211" duration="4841000" />
       <workItem from="1617906482463" duration="6489000" />
       <workItem from="1617913424718" duration="119000" />
-      <workItem from="1617978682522" duration="8368000" />
+      <workItem from="1617978682522" duration="17507000" />
     </task>
     <task id="LOCAL-00001" summary="Fixed file namesaving format for computer local timestamp.&#10;FIxed depth information file save type to numpy array.">
       <created>1572450796538</created>
@@ -261,7 +292,21 @@
       <option name="project" value="LOCAL" />
       <updated>1617982958044</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="add script to count routes, minor changes in main.py, add frames count in visualize.py">
+      <created>1617987546746</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1617987546746</updated>
+    </task>
+    <task id="LOCAL-00008" summary="reduce sampling frequency">
+      <created>1617992216124</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1617992216124</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -287,7 +332,9 @@
     <MESSAGE value="Adds PythonAPI and PoC Jupyter Notebooks" />
     <MESSAGE value="remove useless code, add vehicle awareness code" />
     <MESSAGE value="add visualization script, fix counter bug, minor changes" />
-    <option name="LAST_COMMIT_MESSAGE" value="add visualization script, fix counter bug, minor changes" />
+    <MESSAGE value="add script to count routes, minor changes in main.py, add frames count in visualize.py" />
+    <MESSAGE value="reduce sampling frequency" />
+    <option name="LAST_COMMIT_MESSAGE" value="reduce sampling frequency" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
