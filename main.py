@@ -30,6 +30,7 @@ Town05 - 150 vehic 150 walk
 """
 
 import argparse
+import faulthandler
 import os
 import sys
 import traceback
@@ -53,6 +54,8 @@ new_paths = set(sys.path) - initial_path
 for path in new_paths:
     print(f"Added: {path} to the Path")
 
+faulthandler.enable()
+
 
 def record_one_ego_run(world: CarlaWorld, vehicles: int, walkers: int, weather: list, frames: int, debug: bool,
                        route=None):
@@ -67,6 +70,10 @@ def record_one_ego_run(world: CarlaWorld, vehicles: int, walkers: int, weather: 
     world.remove_npcs()
     world.remove_sensors()
     return media, info
+
+
+def sig_handler(signum, frame):
+    print("segfault")
 
 
 if __name__ == "__main__":
@@ -104,12 +111,12 @@ if __name__ == "__main__":
     weather_lookup = CarlaWorld.weather_lookup
 
     timestamps = []
+    counter = 3
     runs = 2
     frames_per_ego_run = 50
     print('Starting to record data...\n')
 
     if args.routes is None:
-        counter = 0
         for run in range(args.n):
 
             for weather_id, weather_option in enumerate(CarlaWorld.weather_options):
@@ -141,8 +148,7 @@ if __name__ == "__main__":
         routes = parser.parse_file()
         hop_resolution = 1.0
 
-        counter = 0
-        for route_id in list(routes.keys())[:3]:
+        for route_id in list(routes.keys())[counter:5]:
             if routes[route_id]['town'] == args.town:
                 CarlaWorld.world_tag = routes[route_id]['town']
                 CarlaWorld.reset()
@@ -175,4 +181,5 @@ if __name__ == "__main__":
                     print("--------------------------------------")
                 counter += 1
 
+    hdf5_file.close_hdf5()
     print("\n\nData recording has finished successfully.")

@@ -52,7 +52,12 @@ def labels_to_cityscapes_palette(arr):
 def main(file_path: str, metadata: str):
     f = h5py.File(file_path, "r")
     total_run = sum([k.startswith("run") for k in f.keys()])
-    print(f"The file: {file_path} contains {total_run} ego runs\n")
+    total_frames = 0
+    for k in f.keys():
+        timestamps = list(f[k]['rgb'].keys())
+        total_frames += len(timestamps)
+    print(f"The file: {file_path} contains {total_run} ego runs")
+    print(f"The file contains {total_frames} frames\n")
 
     if metadata is not None and os.path.exists(metadata):
         with open(metadata, "r+") as file:

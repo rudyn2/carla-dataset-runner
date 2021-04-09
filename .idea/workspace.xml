@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a41a94bc-a677-4b27-9044-cbb0c43d576e" name="Default Changelist" comment="remove useless code, add vehicle awareness code">
-      <change afterPath="$PROJECT_DIR$/visualize.py" afterDir="false" />
+    <list default="true" id="a41a94bc-a677-4b27-9044-cbb0c43d576e" name="Default Changelist" comment="add visualization script, fix counter bug, minor changes">
+      <change afterPath="$PROJECT_DIR$/playground/count_routes.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CarlaWorld.py" beforeDir="false" afterPath="$PROJECT_DIR$/CarlaWorld.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HDF5Saver.py" beforeDir="false" afterPath="$PROJECT_DIR$/HDF5Saver.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data_visualization.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/data_visualization.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/visualize.py" beforeDir="false" afterPath="$PROJECT_DIR$/visualize.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -92,7 +90,7 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
-      <option name="PARAMETERS" value="sample3 -ve 100 -wa 50 -T 200 --town Town01 --width 288 --height 288 --routes $PROJECT_DIR$/playground/routes_training.xml --debug" />
+      <option name="PARAMETERS" value="sample5 -ve 100 -wa 50 -T 1000 --town Town01 --width 288 --height 288 --routes $PROJECT_DIR$/playground/routes_training.xml" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -219,7 +217,7 @@
       <workItem from="1617812778211" duration="4841000" />
       <workItem from="1617906482463" duration="6489000" />
       <workItem from="1617913424718" duration="119000" />
-      <workItem from="1617978682522" duration="3949000" />
+      <workItem from="1617978682522" duration="8368000" />
     </task>
     <task id="LOCAL-00001" summary="Fixed file namesaving format for computer local timestamp.&#10;FIxed depth information file save type to numpy array.">
       <created>1572450796538</created>
@@ -256,7 +254,14 @@
       <option name="project" value="LOCAL" />
       <updated>1617721255196</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="add visualization script, fix counter bug, minor changes">
+      <created>1617982958044</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1617982958044</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -281,7 +286,8 @@
     <MESSAGE value="adds PythonAPI, new PoC Jupyter Notebooks" />
     <MESSAGE value="Adds PythonAPI and PoC Jupyter Notebooks" />
     <MESSAGE value="remove useless code, add vehicle awareness code" />
-    <option name="LAST_COMMIT_MESSAGE" value="remove useless code, add vehicle awareness code" />
+    <MESSAGE value="add visualization script, fix counter bug, minor changes" />
+    <option name="LAST_COMMIT_MESSAGE" value="add visualization script, fix counter bug, minor changes" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
@@ -314,7 +320,7 @@
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/carla_dataset_runner$main.coverage" NAME="main Coverage Results" MODIFIED="1617982620361" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/carla_dataset_runner$main.coverage" NAME="main Coverage Results" MODIFIED="1617987077639" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/carla_dataset_runner$visualize.coverage" NAME="visualize Coverage Results" MODIFIED="1617980042857" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
