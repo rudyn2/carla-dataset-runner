@@ -325,7 +325,7 @@ class CarlaWorld:
                 # Advance the simulation and wait for the data
                 # Skip every nth frame for data recording, so that one frame is not that similar to another
                 wait_frame_ticks = 0
-                while wait_frame_ticks < 1:
+                while wait_frame_ticks < 5:
                     sync_mode.tick_no_data()
 
                     wait_frame_ticks += 1
