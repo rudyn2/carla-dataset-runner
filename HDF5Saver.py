@@ -7,21 +7,11 @@ class HDF5Saver:
         self.sensor_width = sensor_width
         self.sensor_height = sensor_height
 
-        self.file = h5py.File(file_path_to_save, "w")
-
-        # Creating groups to store each type of data
-        self.rgb_group = self.file.create_group("rgb")
-        self.depth_group = self.file.create_group("depth")
-        self.semantic_group = self.file.create_group("semantic")
-        self.timestamp_group = self.file.create_group("timestamps")
-
+        self.file = h5py.File(file_path_to_save, "a")
         # Storing metadata
         self.file.attrs['sensor_width'] = sensor_width
         self.file.attrs['sensor_height'] = sensor_height
         self.file.attrs['simulation_synchronization_type'] = "syncd"
-        self.rgb_group.attrs['channels'] = 'R,G,B'
-        self.timestamp_group.attrs['time_format'] = "current time in MILISSECONDS since the unix epoch " \
-                                                    "(time.time()*1000 in python3)"
 
     def save_one_ego_run(self, run_id: str, media_data: list):
         # if a group already exits override its content

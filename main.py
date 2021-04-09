@@ -56,6 +56,7 @@ for path in new_paths:
 
 def record_one_ego_run(world: CarlaWorld, vehicles: int, walkers: int, weather: list, frames: int, debug: bool,
                        route=None):
+    world.set_ego_agent(route)
     world.spawn_npcs(number_of_vehicles=vehicles, number_of_walkers=walkers)
     world.set_weather(weather)
 
@@ -93,7 +94,7 @@ if __name__ == "__main__":
     # 1024 x 768 or 1920 x 1080 are recommended values. Higher values lead to better graphics but larger filesize
     sensor_width = args.width
     sensor_height = args.height
-    fov = 90
+    fov = 100
 
     # Beginning data capture procedure
     hdf5_file = HDF5Saver(sensor_width, sensor_height, os.path.join("data", args.hdf5_file + ".hdf5"))
@@ -108,8 +109,9 @@ if __name__ == "__main__":
     print('Starting to record data...\n')
 
     if args.routes is None:
+        counter = 0
         for run in range(args.n):
-            counter = 0
+
             for weather_id, weather_option in enumerate(CarlaWorld.weather_options):
 
                 _id = f"run_{str(counter).zfill(3)}_{weather_lookup[weather_id]}"
@@ -131,16 +133,21 @@ if __name__ == "__main__":
 
                     CarlaWorld.reset()
                 print("--------------------------------------")
+
+            counter += 1
     else:
         print("Reading XML Routes")
         parser = RouteParser(CarlaWorld.map, str(args.routes))
         routes = parser.parse_file()
         hop_resolution = 1.0
 
-        for route_id in list(routes.keys())[:1]:
+        counter = 0
+        for route_id in list(routes.keys())[:3]:
             if routes[route_id]['town'] == args.town:
-                counter = 0
-                for weather_id, weather_option in enumerate(CarlaWorld.weather_options[:1]):
+                CarlaWorld.world_tag = routes[route_id]['town']
+                CarlaWorld.reset()
+
+                for weather_id, weather_option in enumerate(CarlaWorld.weather_options):
 
                     _id = f"run_{str(counter).zfill(3)}_{weather_lookup[weather_id]}"
                     print(f"RUN ID: {_id}")
@@ -166,5 +173,6 @@ if __name__ == "__main__":
 
                         CarlaWorld.reset()
                     print("--------------------------------------")
+                counter += 1
 
     print("\n\nData recording has finished successfully.")

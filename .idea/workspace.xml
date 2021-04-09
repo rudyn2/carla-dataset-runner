@@ -2,82 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a41a94bc-a677-4b27-9044-cbb0c43d576e" name="Default Changelist" comment="remove useless code, add vehicle awareness code">
-      <change afterPath="$PROJECT_DIR$/JsonSaver.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/carla/.ipynb_checkpoints/scene_layout-checkpoint.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/carla/agents/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/carla/agents/navigation/.ipynb_checkpoints/agent-checkpoint.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/carla/agents/navigation/.ipynb_checkpoints/behavior_agent-checkpoint.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/carla/agents/navigation/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/carla/agents/navigation/agent.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/carla/agents/navigation/basic_agent.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/carla/agents/navigation/behavior_agent.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/carla/agents/navigation/controller.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/carla/agents/navigation/global_route_planner.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/carla/agents/navigation/global_route_planner_dao.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/carla/agents/navigation/local_planner.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/carla/agents/navigation/local_planner_behavior.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/carla/agents/navigation/roaming_agent.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/carla/agents/navigation/types_behavior.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/carla/agents/tools/.ipynb_checkpoints/misc-checkpoint.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/carla/agents/tools/.ipynb_checkpoints/vehicle_position-checkpoint.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/carla/agents/tools/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/carla/agents/tools/misc.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/carla/agents/tools/vehicle_position.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/carla/dist/carla-0.9.11-py2.7-linux-x86_64.egg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/carla/dist/carla-0.9.11-py3.7-linux-x86_64.egg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/carla/requirements.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/carla/scene_layout.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/examples/automatic_control.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/examples/client_bounding_boxes.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/examples/dynamic_weather.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/examples/lidar_to_camera.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/examples/manual_control.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/examples/manual_control_carsim.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/examples/manual_control_steeringwheel.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/examples/no_rendering_mode.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/examples/open3d_lidar.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/examples/requirements.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/examples/rss/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/examples/rss/manual_control_rss.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/examples/rss/rss_sensor.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/examples/rss/rss_visualization.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/examples/sensor_synchronization.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/examples/show_recorder_actors_blocked.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/examples/show_recorder_collisions.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/examples/show_recorder_file_info.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/examples/spawn_npc.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/examples/start_recording.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/examples/start_replaying.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/examples/synchronous_mode.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/examples/tutorial.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/examples/vehicle_gallery.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/examples/vehicle_physics.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/python_api.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/util/.ipynb_checkpoints/config-checkpoint.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/util/.ipynb_checkpoints/performance_benchmark-checkpoint.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/util/.ipynb_checkpoints/raycast_sensor_testing-checkpoint.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/util/.ipynb_checkpoints/test_connection-checkpoint.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/util/check_collisions_substepping.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/util/check_raycast_sensors_determinism.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/util/config.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/util/environment.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/util/lane_explorer.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/util/opendrive/TownBig.xodr" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/util/performance_benchmark.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/util/raycast_sensor_testing.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/util/requirements.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PythonAPI/util/test_connection.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/visualize.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CarlaWorld.py" beforeDir="false" afterPath="$PROJECT_DIR$/CarlaWorld.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/HDF5Saver.py" beforeDir="false" afterPath="$PROJECT_DIR$/HDF5Saver.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WeatherSelector.py" beforeDir="false" afterPath="$PROJECT_DIR$/WeatherSelector.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_visualization.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/data_visualization.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/playground/.ipynb_checkpoints/minimal_code-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/playground/.ipynb_checkpoints/minimal_code-checkpoint.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/playground/.ipynb_checkpoints/simple_autopilot-checkpoint.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/playground/minimal_code.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/playground/minimal_code.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/playground/simple_autopilot.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/playground/vehicle_awareness.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/playground/vehicle_awareness.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/settings.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -148,28 +78,6 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="check_hdf5_file (1)" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="dataset_collector" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/utils/hdf5_check" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/utils/hdf5_check/check_hdf5_file.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="dataset_collector" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -184,7 +92,7 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
-      <option name="PARAMETERS" value="test -ve 10" />
+      <option name="PARAMETERS" value="sample3 -ve 100 -wa 50 -T 200 --town Town01 --width 288 --height 288 --routes $PROJECT_DIR$/playground/routes_training.xml --debug" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -236,20 +144,42 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="visualize" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="dataset_collector" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/visualize.py" />
+      <option name="PARAMETERS" value="-i data/sample.hdf5 -m data/sample.json" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <list>
       <item itemvalue="Python.CarlaWorld" />
-      <item itemvalue="Python.check_hdf5_file (1)" />
       <item itemvalue="Python.main" />
       <item itemvalue="Python.spawn_desired_car" />
       <item itemvalue="Python.test_bb_filter" />
+      <item itemvalue="Python.visualize" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Python.main" />
+        <item itemvalue="Python.visualize" />
         <item itemvalue="Python.test_bb_filter" />
         <item itemvalue="Python.spawn_desired_car" />
         <item itemvalue="Python.CarlaWorld" />
-        <item itemvalue="Python.check_hdf5_file (1)" />
       </list>
     </recent_temporary>
   </component>
@@ -286,6 +216,10 @@
       <workItem from="1617637445950" duration="1781000" />
       <workItem from="1617721186156" duration="3572000" />
       <workItem from="1617733221348" duration="11677000" />
+      <workItem from="1617812778211" duration="4841000" />
+      <workItem from="1617906482463" duration="6489000" />
+      <workItem from="1617913424718" duration="119000" />
+      <workItem from="1617978682522" duration="3949000" />
     </task>
     <task id="LOCAL-00001" summary="Fixed file namesaving format for computer local timestamp.&#10;FIxed depth information file save type to numpy array.">
       <created>1572450796538</created>
@@ -370,9 +304,17 @@
           <option name="timeStamp" value="5" />
         </line-breakpoint>
       </breakpoints>
+      <default-breakpoints>
+        <breakpoint type="python-exception">
+          <properties notifyOnTerminate="true" exception="BaseException">
+            <option name="notifyOnTerminate" value="true" />
+          </properties>
+        </breakpoint>
+      </default-breakpoints>
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/carla_dataset_runner$main.coverage" NAME="main Coverage Results" MODIFIED="1617745147582" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/carla_dataset_runner$main.coverage" NAME="main Coverage Results" MODIFIED="1617982620361" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/carla_dataset_runner$visualize.coverage" NAME="visualize Coverage Results" MODIFIED="1617980042857" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

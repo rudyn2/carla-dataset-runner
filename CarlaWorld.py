@@ -65,6 +65,8 @@ class CarlaWorld:
         print('Successfully connected to CARLA')
         self.blueprint_library = self.world.get_blueprint_library()
         self.map = self.world.get_map()
+        self.ego_vehicle = None
+        self.ego_agent = None
 
         # Sensors stuff
         self.camera_x_location = 1.0
@@ -232,7 +234,8 @@ class CarlaWorld:
 
         ego_agent.update_information()
         print("Behavior Agent has been set up successfully")
-        return ego_vehicle, ego_agent
+        self.ego_vehicle = ego_vehicle
+        self.ego_agent = ego_agent
 
     def find_closest_point_to_spawn(self, wp):
 
@@ -295,7 +298,8 @@ class CarlaWorld:
         media_data = []
         info_data = []
 
-        ego_vehicle, ego_agent = self.set_ego_agent(route, debug)
+        ego_vehicle = self.ego_vehicle
+        ego_agent = self.ego_agent
         ego_reached_destination = False
 
         print(f"Using ego: {ego_vehicle.type_id}")
@@ -374,62 +378,3 @@ class CarlaWorld:
                         f'| Orientation: {ego_info["lane_orientation"]:.3f}'
                 progress_bar.update()
                 progress_bar.set_description(s)
-
-    # def begin_data_acquisition2(self, sensor_width, sensor_height, fov, frames_to_record_one_ego=10, timestamps=[],
-    #                            egos_to_run=1):
-    #     print("Beginning new data acquisition")
-    #     # Changes the ego vehicle to be put the sensor
-    #     current_ego_recorded_frames = 0
-    #     # These vehicles are not considered because the cameras get occluded without changing their absolute position
-    #     ego_vehicle = random.choice([x for x in self.world.get_actors().filter("vehicle.*") if x.type_id not in
-    #                                  ['vehicle.audi.tt', 'vehicle.carlamotors.carlacola', 'vehicle.volkswagen.t2']])
-    #     print(f"Using ego: {ego_vehicle.type_id}")
-    #     self.put_rgb_sensor(ego_vehicle, sensor_width, sensor_height, fov)
-    #     self.put_depth_sensor(ego_vehicle, sensor_width, sensor_height, fov)
-    #
-    #     self.put_semantic_sensor(ego_vehicle, sensor_width, sensor_height, fov)
-    #
-    #     # Begin applying the sync mode
-    #     with CarlaSyncMode(self.world, self.rgb_camera, self.depth_camera, self.semantic_camera, fps=30) as sync_mode:
-    #         # Skip initial frames where the car is being put on the ambient
-    #         if self.first_time_simulating:
-    #             for _ in range(30):
-    #                 sync_mode.tick_no_data()
-    #
-    #         while True:
-    #             if current_ego_recorded_frames == frames_to_record_one_ego:
-    #                 print(f"\nRecorded {current_ego_recorded_frames} frames for actual ego")
-    #                 print('------------\n')
-    #                 self.remove_sensors()
-    #                 return timestamps
-    #             # Advance the simulation and wait for the data
-    #             # Skip every nth frame for data recording, so that one frame is not that similar to another
-    #             wait_frame_ticks = 0
-    #             while wait_frame_ticks < 5:
-    #                 sync_mode.tick_no_data()
-    #                 wait_frame_ticks += 1
-    #
-    #             _, rgb_data, depth_data, semantic_data = sync_mode.tick(timeout=2.0)
-    #
-    #             # Processing raw data
-    #             rgb_array = self.process_rgb_img(rgb_data, sensor_width, sensor_height)
-    #             depth_array = self.process_depth_data(depth_data, sensor_width, sensor_height)
-    #             semantic_array = self.process_semantic_img(semantic_data, sensor_width, sensor_height)
-    #
-    #             cv2.imshow('rgb', rgb_array)
-    #             cv2.waitKey(10)
-    #
-    #             ego_speed = ego_vehicle.get_velocity()
-    #             ego_speed = np.array([ego_speed.x, ego_speed.y, ego_speed.z])
-    #             timestamp = round(time.time() * 1000.0)
-    #
-    #             # Saving into opened HDF5 dataset file
-    #             self.HDF5_file.record_data(rgb_array, depth_array, semantic_array, ego_speed, timestamp)
-    #             current_ego_recorded_frames += 1
-    #             self.total_recorded_frames += 1
-    #             timestamps.append(timestamp)
-    #
-    #             sys.stdout.write("\r")
-    #             sys.stdout.write('Frame {0}/{1}'.format(
-    #                 self.total_recorded_frames, frames_to_record_one_ego * egos_to_run * len(self.weather_options)))
-    #             sys.stdout.flush()
