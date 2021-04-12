@@ -1,16 +1,9 @@
 # Carla (0.9.11) dataset collector :car: :floppy_disk:
 
-Script used for collecting data on CARLA version 0.9.6. This repository was created mainly by adapting the example python scripts from the carla repository.
+Script used for collecting data on CARLA version 0.9.11. This repository was created mainly by adapting the example
+python scripts from the carla repository.
 
-Types of data captured include RGB, depth and bounding box of vehicles and pedestrians collection. Other types of data (semantic segmentation, lidar, ...) are not yet implemented, but could be by following the same data structure. Here is a sample of the collected data on Town02:
-
-![town02_sample](new_vids/town02_sample.gif)
-
-https://www.youtube.com/watch?v=LgSwWo82wC0
-
-https://www.youtube.com/watch?v=BWh3IdWkFcA
-
-Do note that car light lamps and pole lamps assets were added manually on my own carla source compiled version and thus at the moment are not present on neither the precompiled nor the built from source carla version.
+Types of data captured include RGB, depth, semantic segmentation, controls, traffic light state and others.
 
 ## Getting started
 ### Prerequisites
@@ -19,12 +12,12 @@ Do note that car light lamps and pole lamps assets were added manually on my own
 * numpy
 * Python carla package and its dependencies 
 
-\*Until now I've only tested on Ubuntu 18.04. It might work on other OS, but that's not certain.
+\*Until now I've only tested on Ubuntu 20.04. It might work on other OS, but that's not certain.
 
 ### Installation
 1. Clone this repo
 ```
-git clone https://github.com/AlanNaoto/carla-dataset-runner
+git clone https://github.com/rudyn2/carla-dataset-runner
 ```
 2. Install dependencies
 
@@ -83,7 +76,6 @@ where:
 * **hdf5_file** is the name of to be created hdf5 file containing all the collected data
 * **-ve** is an optional arg that spawns 100 random vehicles 
 * **-wa** is an optional arg that spawns 110 random pedestrians
-* **-v** is an optional flag to create a mp4 video file
 
 *Further commands can be seen by running the --help flag.
 
@@ -92,25 +84,11 @@ After running this command, the script will begin collecting the data from the s
 \*At the moment, to avoid high correlation between consecutive frames, it is saving only once every 5th frame.
 
 ## HDF5 data output format
-The HDF5 file is structured in the following groups, where each frame entry is assigned a common UTC timestamp. A common parser for this file is provided in [create_content_on_hdf5.py](utils/create_video_on_hdf5/create_content_on_hdf5.py).
 
-* bounding_box
-    * vehicles
-    * walkers
-* depth
-* rgb
-* ego_speed
-* timestamps
+The HDF5 file is structured in the following groups, where each frame entry is assigned a common UTC timestamp. A common
+parser for this file is provided in [visualize.py](visualize.py).
 
-
-Data            | Description | Type 
--------------   | ----------- | ----------
-bounding boxes  | array [xmin, ymin, xmax, ymax] | int 
-depth           | array [sensor_width * sensor_image] | float
-rgb             | array [sensor_width * sensor_image * 3 channels] | int
-ego_speed       | array [vx, vy, vz in m/s] | float
-timestamps      | UTC milisseconds since the UNIX epoch format | int
-
+![town02_sample](readme_files/data_structure.png)
 
 
 
