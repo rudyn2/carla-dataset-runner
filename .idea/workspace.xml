@@ -1,18 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a41a94bc-a677-4b27-9044-cbb0c43d576e" name="Default Changelist" comment="reduce sampling frequency">
-      <change afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/routes/routes_training.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/scripts/run_collector.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/scripts/run_docker.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/scripts/run_docker_offscreen.sh" afterDir="false" />
+    <list default="true" id="a41a94bc-a677-4b27-9044-cbb0c43d576e" name="Default Changelist" comment="new scripts, add Dockerfile, minor changes">
+      <change afterPath="$PROJECT_DIR$/scripts/run_collector_local.sh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CarlaWorld.py" beforeDir="false" afterPath="$PROJECT_DIR$/CarlaWorld.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/environment.yml" beforeDir="false" afterPath="$PROJECT_DIR$/environment.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spawn_npc.py" beforeDir="false" afterPath="$PROJECT_DIR$/spawn_npc.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/visualize.py" beforeDir="false" afterPath="$PROJECT_DIR$/visualize.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/run_collector.sh" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/run_collector.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,7 +40,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/routes" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/scripts" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -57,11 +52,12 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/scripts" />
       <recent name="$PROJECT_DIR$/routes" />
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.main">
+  <component name="RunManager" selected="Docker.Dockerfile">
     <configuration name="CarlaWorld" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="dataset_collector" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -176,11 +172,19 @@
       <deployment type="dockerfile">
         <settings>
           <option name="imageTag" value="test_collector" />
-          <option name="buildCliOptions" value="--rm --network host " />
+          <option name="buildCliOptions" value="--rm" />
           <option name="command" value="/bin/bash" />
           <option name="containerName" value="" />
           <option name="entrypoint" value="" />
-          <option name="commandLineOptions" value="" />
+          <option name="envVars">
+            <list>
+              <DockerEnvVarImpl>
+                <option name="name" value="DOCKER_HOST_IP" />
+                <option name="value" value="172.26.0.1" />
+              </DockerEnvVarImpl>
+            </list>
+          </option>
+          <option name="commandLineOptions" value="--network host" />
           <option name="sourceFilePath" value="Dockerfile" />
           <option name="volumeBindings">
             <list>
@@ -248,7 +252,8 @@
       <workItem from="1617812778211" duration="4841000" />
       <workItem from="1617906482463" duration="6489000" />
       <workItem from="1617913424718" duration="119000" />
-      <workItem from="1617978682522" duration="17507000" />
+      <workItem from="1617978682522" duration="19313000" />
+      <workItem from="1618240535239" duration="1395000" />
     </task>
     <task id="LOCAL-00001" summary="Fixed file namesaving format for computer local timestamp.&#10;FIxed depth information file save type to numpy array.">
       <created>1572450796538</created>
@@ -306,7 +311,14 @@
       <option name="project" value="LOCAL" />
       <updated>1617992216124</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="new scripts, add Dockerfile, minor changes">
+      <created>1618000176448</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1618000176448</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -334,7 +346,8 @@
     <MESSAGE value="add visualization script, fix counter bug, minor changes" />
     <MESSAGE value="add script to count routes, minor changes in main.py, add frames count in visualize.py" />
     <MESSAGE value="reduce sampling frequency" />
-    <option name="LAST_COMMIT_MESSAGE" value="reduce sampling frequency" />
+    <MESSAGE value="new scripts, add Dockerfile, minor changes" />
+    <option name="LAST_COMMIT_MESSAGE" value="new scripts, add Dockerfile, minor changes" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>

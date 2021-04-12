@@ -24,10 +24,9 @@ COPY *.py /home/carla-dataset-runner/
 COPY routes/routes_training.xml /home/carla-dataset-runner/routes/
 WORKDIR /home/carla-dataset-runner
 
-# Set pythonpath
+# Set some envirnonment variables
 ENV PYTHONPATH "${PYTHONPATH}:/home/carla-dataset-runner/PythonAPI/carla"
 ENV PYTHONPATH "${PYTHONPATH}:/home/carla-dataset-runner/PythonAPI/carla/dist/carla-0.9.11-py3.7-linux-x86_64.egg"
 
-# Checks connectivity
-RUN python PythonAPI/util/test_connection.py
-RUN python main.py test_docker -ve 100 -wa 50 -T 1000 -t --width 288 --height 288 Town01 --routes /home/carla-dataset-runner/routes/routes_training.xml
+# Run data collection, if logs aren't working, prefer to do it manually
+# RUN python main.py test_docker -ve 100 -wa 50 -T 1000 -H 172.26.0.1 -t Town01 --width 288 --height 288 --routes /home/carla-dataset-runner/routes/routes_training.xml

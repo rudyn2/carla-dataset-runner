@@ -72,14 +72,11 @@ def record_one_ego_run(world: CarlaWorld, vehicles: int, walkers: int, weather: 
     return media, info
 
 
-def sig_handler(signum, frame):
-    print("segfault")
-
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Settings for the data capture",
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('hdf5_file', default=None, type=str, help='name of hdf5 file to save the data')
+    parser.add_argument('-H', '--host', default='localhost', type=str, help='CARLA server ip address')
     parser.add_argument('-n', default=1, type=int, help='number of ego executions')
     parser.add_argument('-T', default=100, type=int,
                         help='number of frames to record per ego execution')
@@ -97,6 +94,11 @@ if __name__ == "__main__":
     if args.vehicles == 0 and args.walkers == 0:
         print('Are you sure you don\'t want to spawn vehicles and pedestrians in the map?')
 
+    try:
+        host_ip = os.environ['DOCKER_HOST_IP']
+    except KeyError:
+        host_ip = args.host
+
     # Sensor setup (rgb and depth share these values)
     # 1024 x 768 or 1920 x 1080 are recommended values. Higher values lead to better graphics but larger filesize
     sensor_width = args.width
@@ -107,7 +109,7 @@ if __name__ == "__main__":
     hdf5_file = HDF5Saver(sensor_width, sensor_height, os.path.join("data", args.hdf5_file + ".hdf5"))
     json_file = JsonSaver(os.path.join("data", args.hdf5_file + ".json"))
     print("HDF5 File opened")
-    CarlaWorld = CarlaWorld(hdf5_file=hdf5_file, town=args.town)
+    CarlaWorld = CarlaWorld(hdf5_file=hdf5_file, town=args.town, host=host_ip)
     weather_lookup = CarlaWorld.weather_lookup
 
     timestamps = []

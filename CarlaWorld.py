@@ -52,18 +52,18 @@ class CantSpawnEgoError(Exception):
 
 
 class CarlaWorld:
-    def __init__(self, hdf5_file, town='Town02'):
+    def __init__(self, hdf5_file, host: str, town='Town02'):
         self.HDF5_file = hdf5_file
         self.world_tag = town
 
         # Carla initialization
-        self.host = '172.26.0.1'
+        self.host = host
         self.client = carla.Client(self.host, 2000)
         self.client.set_timeout(20.0)
         self.client.load_world(town)
         self.world = self.client.get_world()
 
-        print('Successfully connected to CARLA')
+        print(f'Successfully connected to CARLA {self.host}:2000')
         self.blueprint_library = self.world.get_blueprint_library()
         self.map = self.world.get_map()
         self.ego_vehicle = None
