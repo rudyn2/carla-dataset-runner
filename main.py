@@ -77,6 +77,7 @@ if __name__ == "__main__":
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('hdf5_file', default=None, type=str, help='name of hdf5 file to save the data')
     parser.add_argument('-H', '--host', default='localhost', type=str, help='CARLA server ip address')
+    parser.add_argument('-p', '--port', default=2000, type=int, help='CARLA server port number')
     parser.add_argument('-n', default=1, type=int, help='number of ego executions')
     parser.add_argument('-T', default=100, type=int,
                         help='number of frames to record per ego execution')
