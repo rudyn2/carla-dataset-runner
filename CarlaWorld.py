@@ -52,12 +52,13 @@ class CantSpawnEgoError(Exception):
 
 
 class CarlaWorld:
-    def __init__(self, host: str, town='Town02'):
+    def __init__(self, host: str, port: int, town='Town02'):
         self.world_tag = town
 
         # Carla initialization
         self.host = host
-        self.client = carla.Client(self.host, 2000)
+        self.port = port
+        self.client = carla.Client(self.host, self.port)
         self.client.set_timeout(20.0)
         self.client.load_world(town)
         self.world = self.client.get_world()

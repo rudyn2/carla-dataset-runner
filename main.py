@@ -110,7 +110,7 @@ if __name__ == "__main__":
     # Beginning data capture procedure
     json_file = JsonSaver(os.path.join("data", args.hdf5_file + ".json"))
     print("HDF5 File opened")
-    CarlaWorld = CarlaWorld(town=args.town, host=host_ip)
+    CarlaWorld = CarlaWorld(town=args.town, host=host_ip, port=args.port)
     weather_lookup = CarlaWorld.weather_lookup
 
     timestamps = []
