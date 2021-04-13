@@ -80,6 +80,7 @@ if __name__ == "__main__":
     parser.add_argument('-n', default=1, type=int, help='number of ego executions')
     parser.add_argument('-T', default=100, type=int,
                         help='number of frames to record per ego execution')
+    parser.add_argument('-ea', '--early-break', type=int, help='Early break at some number of routes recorded')
     parser.add_argument('-t', '--town', default='Town01', type=str, help="town to use")
     parser.add_argument('-wi', '--width', default=1024, type=int, help="camera rgb and depth sensor width in pixels")
     parser.add_argument('-he', '--height', default=768, type=int, help="camera rgb and depth sensor width in pixels")
@@ -185,5 +186,9 @@ if __name__ == "__main__":
                         CarlaWorld.reset()
                     print("--------------------------------------")
                 counter += 1
+
+                if counter == args.early_break:
+                    print("Early stopped!")
+                    break
 
     print("\n\nData recording has finished successfully.")
