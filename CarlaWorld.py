@@ -52,8 +52,7 @@ class CantSpawnEgoError(Exception):
 
 
 class CarlaWorld:
-    def __init__(self, hdf5_file, host: str, town='Town02'):
-        self.HDF5_file = hdf5_file
+    def __init__(self, host: str, town='Town02'):
         self.world_tag = town
 
         # Carla initialization

@@ -106,16 +106,13 @@ if __name__ == "__main__":
     fov = 100
 
     # Beginning data capture procedure
-    hdf5_file = HDF5Saver(sensor_width, sensor_height, os.path.join("data", args.hdf5_file + ".hdf5"))
     json_file = JsonSaver(os.path.join("data", args.hdf5_file + ".json"))
     print("HDF5 File opened")
-    CarlaWorld = CarlaWorld(hdf5_file=hdf5_file, town=args.town, host=host_ip)
+    CarlaWorld = CarlaWorld(town=args.town, host=host_ip)
     weather_lookup = CarlaWorld.weather_lookup
 
     timestamps = []
-    counter = 3
-    runs = 2
-    frames_per_ego_run = 50
+    counter = 0
     print('Starting to record data...\n')
 
     if args.routes is None:
@@ -131,7 +128,10 @@ if __name__ == "__main__":
                     try:
                         media_data, info_data = record_one_ego_run(CarlaWorld, args.vehicles, args.walkers,
                                                                    weather_option, args.T, args.debug)
+                        hdf5_file = HDF5Saver(sensor_width, sensor_height,
+                                              os.path.join("data", args.hdf5_file + ".hdf5"))
                         hdf5_file.save_one_ego_run(media_data=media_data, run_id=_id)
+                        hdf5_file.close_hdf5()
                         json_file.save_one_ego_run(info_data=info_data, run_id=_id)
                         not_saved = False
 
@@ -150,7 +150,7 @@ if __name__ == "__main__":
         routes = parser.parse_file()
         hop_resolution = 1.0
 
-        for route_id in list(routes.keys())[counter:5]:
+        for route_id in list(routes.keys()):
             if routes[route_id]['town'] == args.town:
                 CarlaWorld.world_tag = routes[route_id]['town']
                 CarlaWorld.reset()
@@ -167,7 +167,10 @@ if __name__ == "__main__":
                                                                        weather_option, args.T, args.debug,
                                                                        routes[route_id]['waypoints'])
                             print("Saving")
+                            hdf5_file = HDF5Saver(sensor_width, sensor_height,
+                                                  os.path.join("data", args.hdf5_file + ".hdf5"))
                             hdf5_file.save_one_ego_run(media_data=media_data, run_id=_id)
+                            hdf5_file.close_hdf5()
                             print("Images saved!")
                             json_file.save_one_ego_run(info_data=info_data, run_id=_id)
                             print("Metadata saved!")
@@ -183,5 +186,4 @@ if __name__ == "__main__":
                     print("--------------------------------------")
                 counter += 1
 
-    hdf5_file.close_hdf5()
     print("\n\nData recording has finished successfully.")
