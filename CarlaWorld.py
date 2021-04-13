@@ -63,7 +63,7 @@ class CarlaWorld:
         self.client.load_world(town)
         self.world = self.client.get_world()
 
-        print(f'Successfully connected to CARLA {self.host}:2000')
+        print(f'Successfully connected to CARLA {self.host}:{self.port}')
         self.blueprint_library = self.world.get_blueprint_library()
         self.map = self.world.get_map()
         self.ego_vehicle = None
