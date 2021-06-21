@@ -89,44 +89,21 @@ class CarlaExtractor(object):
         collision_sensor.listen(lambda event: on_collision(weak_self, event))
         return collision_sensor
 
-    def set_birdeye_camera(self, vehicle, sensor_width: int = 640, sensor_height: int = 480, fov: int = 110):
-        bp = self.blueprint_library.find('sensor.camera.rgb')
-        bp.set_attribute('image_size_x', f'{sensor_width}')
-        bp.set_attribute('image_size_y', f'{sensor_height}')
-        bp.set_attribute('fov', f'{fov}')
-
-        # Adjust sensor relative position to the vehicle
-        spawn_point = carla.Transform(carla.Location(x=1, z=20), carla.Rotation(pitch=-90, yaw=0, roll=0))
-        birdeye_camera = self.world.spawn_actor(bp, spawn_point, attach_to=vehicle)
-        birdeye_camera.blur_amount = 0.0
-        birdeye_camera.motion_blur_intensity = 0
-        birdeye_camera.motion_max_distortion = 0
-
-        # Camera calibration
-        calibration = np.identity(3)
-        calibration[0, 2] = sensor_width / 2.0
-        calibration[1, 2] = sensor_height / 2.0
-        calibration[0, 0] = calibration[1, 1] = sensor_width / (2.0 * np.tan(fov * np.pi / 360.0))
-        birdeye_camera.calibration = calibration  # Parameter K of the camera
-        return birdeye_camera
-
     def set_spectator(self, vehicle):
         """
         The following code would move the spectator actor, to point the view towards a desired vehicle.
         """
         spectator = self.world.get_spectator()
         transform = vehicle.get_transform()
-        spectator.set_transform(carla.Transform(transform.location + carla.Location(z=50),
+        spectator.set_transform(carla.Transform(transform.location + carla.Location(z=80),
                                                 carla.Rotation(pitch=-90)))
 
-    def set_sensors(self, vehicle, add_birdeye: bool = False):
+    def set_sensors(self, vehicle):
         print(colored("[*] Setting sensors", "white"))
         rgb_camera = self.set_camera(vehicle)
         depth_sensor = self.set_depth_sensor(vehicle)
         semantic_sensor = self.set_semantic_sensor(vehicle)
         collision_sensor = self.set_collision_sensor(vehicle)
-        if add_birdeye:
-            birdeye = self.set_birdeye_camera(vehicle)
         print(colored("[+] All sensors were attached successfully", "green"))
 
     def set_ego(self, noisy: bool = True):
