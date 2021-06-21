@@ -30,17 +30,64 @@ import argparse
 import os
 import sys
 import pathlib
+import time
+
 from src.engine import CarlaExtractor
+from src.utils.HDF5Saver import HDF5Saver
+from src.utils.JsonSaver import JsonSaver
+from src.utils.WeatherSelector import WeatherSelector
+from termcolor import colored
+import uuid
 
 
 # TODO: Add main routine for data extraction.
-# TODO: Implement logging (wandb could be a good option)
+# TODO: Implement cloud  logging (wandb could be a good option)
+def run(args_):
+
+    hdf5_file_path = str(pathlib.Path(args_.hdf5_file).absolute()) + ".hdf5"
+    json_file_path = str(pathlib.Path(args_.hdf5_file).absolute()) + ".json"
+    print(colored(f"Host: {args_.host}\nPort: {args_.port}\nSensor width: {args_.width}"
+                  f"\nSensor height: {args_.height}\nTown: {args_.town}\nVehicles: {args_.vehicles}"
+                  f"\nWalkers: {args_.walkers}\nHDF5 output path: {hdf5_file_path}\nJSON output path: {json_file_path}", "magenta"))
+
+    engine = CarlaExtractor(host=args_.host,
+                            port=args_.port,
+                            sensor_width=args_.width,
+                            sensor_height=args_.height,
+                            town=args_.town)
+    hdf5_saver = HDF5Saver(sensor_width=args_.width,
+                           sensor_height=args_.height,
+                           file_path_to_save=hdf5_file_path)
+    json_saver = JsonSaver(json_file_path)
+
+    weather_selector = WeatherSelector()
+    weather_hooks = [weather_selector.morning, weather_selector.midday, weather_selector.default,
+                     weather_selector.almost_night, weather_selector.afternoon]
+
+    try:
+        print(colored("Starting the extraction...", "cyan"))
+        for iteration in range(args_.n):
+            for weather in weather_hooks:
+                print(colored(f"weather: {weather.__name__}", "white"))
+                engine.set_weather(weather())
+                run_id = str(uuid.uuid4())
+                media, meta = engine.record(vehicles=args_.vehicles,
+                                            walkers=args_.walkers,
+                                            max_frames=args_.T,
+                                            debug=args_.debug)
+                hdf5_saver.save_one_ego_run(run_id=run_id, media_data=media)
+                json_saver.save_one_ego_run(run_id=run_id, info_data=meta)
+
+        print(colored("Extraction finished!", "cyan"))
+
+    finally:
+        hdf5_saver.close_hdf5()
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Settings for the data capture",
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('hdf5_file', default=None, type=str, help='name of hdf5 file to save the data')
+    parser.add_argument('hdf5_file', default=None, type=str, help='name of hdf5 file where data will be stored')
     parser.add_argument('-H', '--host', default='localhost', type=str, help='CARLA server ip address')
     parser.add_argument('-p', '--port', default=2000, type=int, help='CARLA server port number')
     parser.add_argument('-n', default=1, type=int, help='number of ego executions')
@@ -54,5 +101,4 @@ if __name__ == "__main__":
     parser.add_argument('--debug', action="store_true")
 
     args = parser.parse_args()
-
-    print("\n\nData recording has finished successfully.")
+    run(args)

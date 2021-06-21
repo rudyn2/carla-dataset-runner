@@ -30,7 +30,7 @@ def process_semantic_img(img, sensor_width, sensor_height):
     return img
 
 
-def on_collision(weak_self, event):
+def on_collision(weak_self, event, ego_id):
     """On collision method"""
     self = weak_self()
     if not self:
@@ -38,7 +38,7 @@ def on_collision(weak_self, event):
 
     if isinstance(event, list):
         for e in event:
-            if e.actor.id == self.ego_vehicle.id:
+            if e.actor.id == ego_id:
                 self.collision_info = {
                     "frame": e.frame,
                     "actor_id": e.actor.id,
@@ -48,7 +48,7 @@ def on_collision(weak_self, event):
         return
 
     else:   # we assume that there is just one collision event
-        if event.actor.id == self.ego_vehicle.id:
+        if event.actor.id == ego_id:
             self.collision_info = {
                 "frame": event.frame,
                 "actor_id": event.actor.id,
