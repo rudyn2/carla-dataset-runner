@@ -1,10 +1,28 @@
 from custom_agents.noisy_agent import NoisyAgent
 import carla
 from termcolor import colored
-from utils.SensorHandlers import on_collision
+from utils.SensorHandlers import on_collision, process_rgb_img, process_depth_data, process_semantic_img
+from utils.SyncMode import CarlaSyncMode
 import numpy as np
 import weakref
 import random
+import time
+from tqdm import tqdm
+
+
+def parse_control(c):
+    """
+    Parse a carla.VehicleControl to a json object.
+    """
+    return {
+        "brake": c.brake,
+        "gear": c.gear,
+        "hand_brake": c.hand_brake,
+        "manual_gear_shift": c.manual_gear_shift,
+        "reverse": c.reverse,
+        "steer": c.steer,
+        "throttle": c.throttle
+    }
 
 
 class CarlaExtractor(object):
@@ -14,6 +32,8 @@ class CarlaExtractor(object):
     """
 
     def __init__(self,
+                 sensor_width: int = 288,
+                 sensor_height: int = 288,
                  host: str = "localhost",
                  port: int = 2000,
                  town: str = 'Town01'):
@@ -27,6 +47,7 @@ class CarlaExtractor(object):
         self.map = self.world.get_map()
         print(colored(f"Successfully connected to CARLA at {host}:{port}", "green"))
 
+        self.sensor_width, self.sensor_height = sensor_width, sensor_height
         self.sensor_list = []
 
     def reset(self):
@@ -36,7 +57,7 @@ class CarlaExtractor(object):
     def set_actors(self, vehicles: int, walkers: int):
         raise NotImplementedError
 
-    def set_camera(self, vehicle, sensor_width: int = 640, sensor_height: int = 480, fov: int = 110) -> object:
+    def set_camera(self, vehicle, sensor_width: int, sensor_height: int, fov: int) -> object:
         bp = self.blueprint_library.find('sensor.camera.rgb')
         bp.set_attribute('image_size_x', f'{sensor_width}')
         bp.set_attribute('image_size_y', f'{sensor_height}')
@@ -56,7 +77,7 @@ class CarlaExtractor(object):
         calibration[0, 0] = calibration[1, 1] = sensor_width / (2.0 * np.tan(fov * np.pi / 360.0))
         return rgb_camera
 
-    def set_depth_sensor(self, vehicle, sensor_width: int = 640, sensor_height: int = 480, fov: int = 110):
+    def set_depth_sensor(self, vehicle, sensor_width: int, sensor_height: int, fov: int):
         bp = self.blueprint_library.find('sensor.camera.depth')
         bp.set_attribute('image_size_x', f'{sensor_width}')
         bp.set_attribute('image_size_y', f'{sensor_height}')
@@ -67,7 +88,7 @@ class CarlaExtractor(object):
         depth_camera = self.world.spawn_actor(bp, spawn_point, attach_to=vehicle)
         return depth_camera
 
-    def set_semantic_sensor(self, vehicle, sensor_width: int = 640, sensor_height: int = 480, fov: int = 110):
+    def set_semantic_sensor(self, vehicle, sensor_width: int, sensor_height: int, fov: int):
         bp = self.blueprint_library.find('sensor.camera.semantic_segmentation')
         bp.set_attribute('image_size_x', f'{sensor_width}')
         bp.set_attribute('image_size_y', f'{sensor_height}')
@@ -89,22 +110,24 @@ class CarlaExtractor(object):
         collision_sensor.listen(lambda event: on_collision(weak_self, event))
         return collision_sensor
 
-    def set_spectator(self, vehicle):
+    def update_spectator(self, vehicle):
         """
         The following code would move the spectator actor, to point the view towards a desired vehicle.
         """
         spectator = self.world.get_spectator()
         transform = vehicle.get_transform()
-        spectator.set_transform(carla.Transform(transform.location + carla.Location(z=80),
+        spectator.set_transform(carla.Transform(transform.location + carla.Location(z=50),
                                                 carla.Rotation(pitch=-90)))
 
-    def set_sensors(self, vehicle):
+    def set_sensors(self, vehicle, sensor_width: int, sensor_height: int, fov: int = 110):
         print(colored("[*] Setting sensors", "white"))
-        rgb_camera = self.set_camera(vehicle)
-        depth_sensor = self.set_depth_sensor(vehicle)
-        semantic_sensor = self.set_semantic_sensor(vehicle)
+        rgb_camera = self.set_camera(vehicle, sensor_width, sensor_height, fov)
+        depth_sensor = self.set_depth_sensor(vehicle, sensor_width, sensor_height, fov)
+        semantic_sensor = self.set_semantic_sensor(vehicle, sensor_width, sensor_height, fov)
         collision_sensor = self.set_collision_sensor(vehicle)
         print(colored("[+] All sensors were attached successfully", "green"))
+
+        return [rgb_camera, depth_sensor, semantic_sensor], collision_sensor
 
     def set_ego(self, noisy: bool = True):
         """
@@ -113,6 +136,7 @@ class CarlaExtractor(object):
         """
         # These vehicles are not considered because
         # the cameras get occluded without changing their absolute position
+        info = {}
         available_vehicle_bps = [bp for bp in self.blueprint_library.filter("vehicle.*")]
         ego_vehicle_bp = random.choice([x for x in available_vehicle_bps if x.id not in
                                      ['vehicle.audi.tt', 'vehicle.carlamotors.carlacola', 'vehicle.tesla.cybertruck',
@@ -125,7 +149,9 @@ class CarlaExtractor(object):
         if ego_vehicle is None:
             print(colored("Couldn't spawn ego vehicle", "red"))
             return None
-        self.set_spectator(ego_vehicle)
+        info['vehicle'] = ego_vehicle.type_id
+        info['id'] = ego_vehicle.id
+        self.update_spectator(vehicle=ego_vehicle)
 
         ego_agent = NoisyAgent(ego_vehicle, is_noisy=noisy)
         ego_vehicle_location = ego_vehicle.get_location()
@@ -140,12 +166,13 @@ class CarlaExtractor(object):
             dx = point.location.x - ego_vehicle_location.x
             dy = point.location.y - ego_vehicle_location.y
             distance = np.sqrt(dx * dx + dy * dy)
-            if point.location != ego_vehicle.get_location() and distance > 20:
+            if point.location != ego_vehicle.get_location() and distance > 40:
 
                 ego_agent.set_route(ego_vehicle.get_location(), point.location)
+                info['destination'] = point
                 break
 
-        return ego_agent, ego_vehicle
+        return ego_agent, ego_vehicle, info
 
     def try_spawn_ego(self, ego_vehicle_bp, spawn_points):
         ego_vehicle = None
@@ -156,16 +183,73 @@ class CarlaExtractor(object):
                 return ego_vehicle
         return ego_vehicle
 
-    def record(self):
+    def show_route(self, start_location, end_location):
+        self.world.debug.draw_string(start_location, "START", draw_shadow=False,
+                                     color=carla.Color(r=255, g=0, b=0), life_time=30, persistent_lines=True)
+        self.world.debug.draw_string(end_location, "END", draw_shadow=False,
+                                     color=carla.Color(r=255, g=0, b=0), life_time=30, persistent_lines=True)
+
+    def record(self, max_frames: int = 500, skip_frames: int = 5, debug: bool = False):
         """
         Use the ego to record all the data in one episode. Returns the data needed for hdf5 saver and json saver.
         # TODO: Specify method signature.
         """
-        raise NotImplementedError
+
+        ego_agent, ego_vehicle, info = self.set_ego(noisy=True)
+        # SPAWN SURROUNDING VEHICLES AND PEDESTRIANS HERE
+        sensors, collision_sensor = self.set_sensors(ego_vehicle, self.sensor_width, self.sensor_height)
+        # show route
+        if debug:
+            self.show_route(ego_vehicle.get_location(), info['destination'].location)
+
+        desc = "Frame: {}/{} SPEED={:.2f} HLC={} LANE_DISTANCE={:2f} LANE_ORIENTATION={:.2F}"
+        pbar = tqdm(initial=0, leave=False, total=max_frames, desc=desc.format(0, max_frames, 0, 0, 0, 0))
+        media, meta = [], []
+        print(colored("[*] Initializing extraction", "white"))
+        with CarlaSyncMode(self.world, *sensors, fps=20) as sync_mode:
+            frames = 0
+            while frames <= max_frames:
+
+                # # Skip every 5 frames for data recording, so that one frame is not that similar to another
+                for _ in range(skip_frames):
+                    sync_mode.tick_no_data()
+                    ego_vehicle.apply_control(ego_agent.run_step()['control'])
+                    self.update_spectator(ego_vehicle)
+
+                # get data and process it
+                _, rgb, depth, semantic = sync_mode.tick(timeout=2.0)
+                rgb = process_rgb_img(rgb, self.sensor_width, self.sensor_height)
+                depth = process_depth_data(depth, self.sensor_width, self.sensor_height)
+                semantic = process_semantic_img(semantic, self.sensor_width, self.sensor_height)
+                timestamp = round(time.time() * 1000.0)
+
+                # apply control
+                ego_info = ego_agent.run_step()
+                control = ego_info['control']
+                ego_vehicle.apply_control(control)
+
+                # save data
+                ego_info["control"] = parse_control(ego_info["control"])
+                media.append(dict(timestamp=timestamp, rgb=rgb, depth=depth, semantic=semantic))
+                meta.append(dict(timestamp=timestamp, metadata=ego_info))
+
+                # preparing next frame
+                frames += 1
+                pbar.desc = desc.format(frames, max_frames, ego_info["speed"], ego_info["command"],
+                                        ego_info["lane_distance"], ego_info["lane_orientation"])
+                pbar.update(1)
+                self.update_spectator(ego_vehicle)
+            pbar.close()
+            print(colored("[+] Extraction completed successfully, exiting sync mode...", "green"))
+
+        for sensor in [*sensors, collision_sensor]:
+            if sensor.is_listening:
+                sensor.stop()
+            if sensor.is_alive:
+                sensor.destroy()
 
 
 if __name__ == '__main__':
 
     c = CarlaExtractor()
-    _, v = c.set_ego()
-    c.set_sensors(v)
+    c.record(max_frames=100, debug=True)
