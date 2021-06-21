@@ -1,6 +1,5 @@
 import sys
 import pathlib
-import os
 
 # Add carla egg
 if sys.platform.__contains__('win'):
