@@ -287,8 +287,8 @@ def _compute_connection(current_waypoint, next_waypoint):
 
 class LocalPlannerNew(object):
     def __init__(self, vehicle, resolution=15, threshold_before=2.5, threshold_after=5.0):
-        from custom_agents.navigation.global_route_planner import GlobalRoutePlanner
-        from custom_agents.navigation.global_route_planner_dao import GlobalRoutePlannerDAO
+        from .global_route_planner import GlobalRoutePlanner
+        from .global_route_planner_dao import GlobalRoutePlannerDAO
 
         # Max skip avoids misplanning when route includes both lanes.
         self._max_skip = 20
@@ -391,8 +391,8 @@ class LocalPlannerNew(object):
 
 class LocalPlannerOld(object):
     def __init__(self, vehicle, resolution=1.5):
-        from custom_agents.navigation.global_route_planner import GlobalRoutePlanner
-        from custom_agents.navigation.global_route_planner_dao import GlobalRoutePlannerDAO
+        from global_route_planner import GlobalRoutePlanner
+        from global_route_planner_dao import GlobalRoutePlannerDAO
 
         self._dt = 1.0 / 10.0
         self._target_speed = 20.0  # Km/h

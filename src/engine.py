@@ -25,7 +25,7 @@ class CarlaExtractor(object):
         self.world = self.client.get_world()
         self.blueprint_library = self.world.get_blueprint_library()
         self.map = self.world.get_map()
-        print(f"Successfully connected to CARLA at {host}:{port}")
+        print(colored(f"Successfully connected to CARLA at {host}:{port}", "green"))
 
         self.sensor_list = []
 
@@ -110,6 +110,15 @@ class CarlaExtractor(object):
         birdeye_camera.calibration = calibration  # Parameter K of the camera
         return birdeye_camera
 
+    def set_spectator(self, vehicle):
+        """
+        The following code would move the spectator actor, to point the view towards a desired vehicle.
+        """
+        spectator = self.world.get_spectator()
+        transform = vehicle.get_transform()
+        spectator.set_transform(carla.Transform(transform.location + carla.Location(z=50),
+                                                carla.Rotation(pitch=-90)))
+
     def set_sensors(self, vehicle, add_birdeye: bool = False):
         print(colored("[*] Setting sensors", "white"))
         rgb_camera = self.set_camera(vehicle)
@@ -120,17 +129,27 @@ class CarlaExtractor(object):
             birdeye = self.set_birdeye_camera(vehicle)
         print(colored("[+] All sensors were attached successfully", "green"))
 
-    def set_ego(self, noisy: bool = True) -> bool:
+    def set_ego(self, noisy: bool = True):
         """
         Add ego agent to the simulation. Return an Carla.Vehicle object.
-        :return: True if the ego agent was added successfully to the simulation.
+        :return: The ego agent and ego vehicle if it was added successfully. Otherwise returns None.
         """
         # These vehicles are not considered because
         # the cameras get occluded without changing their absolute position
-        ego_vehicle = random.choice([x for x in self.world.get_actors().filter("vehicle.*") if x.type_id not in
+        available_vehicle_bps = [bp for bp in self.blueprint_library.filter("vehicle.*")]
+        ego_vehicle_bp = random.choice([x for x in available_vehicle_bps if x.id not in
                                      ['vehicle.audi.tt', 'vehicle.carlamotors.carlacola', 'vehicle.tesla.cybertruck',
                                       'vehicle.volkswagen.t2']])
-        ego_vehicle.set_autopilot(False)
+
+        spawn_points = self.map.get_spawn_points()
+        random.shuffle(spawn_points)
+
+        ego_vehicle = self.try_spawn_ego(ego_vehicle_bp, spawn_points)
+        if ego_vehicle is None:
+            print(colored("Couldn't spawn ego vehicle", "red"))
+            return None
+        self.set_spectator(ego_vehicle)
+
         ego_agent = NoisyAgent(ego_vehicle, is_noisy=noisy)
         ego_vehicle_location = ego_vehicle.get_location()
 
@@ -138,20 +157,27 @@ class CarlaExtractor(object):
             if v.id != ego_vehicle.id:
                 v.set_autopilot(True)
 
-        spawn_points = self.map.get_spawn_points()
-        random.shuffle(spawn_points)
         # find the first location that isn't the ego vehicle location and its far away
         ego_setup_success = False
         for point in spawn_points:
-            dx = point.location.x - ego_vehicle_location.location.x
+            dx = point.location.x - ego_vehicle_location.x
             dy = point.location.y - ego_vehicle_location.y
             distance = np.sqrt(dx * dx + dy * dy)
             if point.location != ego_vehicle.get_location() and distance > 20:
-                ego_setup_success = True
-                ego_agent.set_route(ego_vehicle.get_location(), point)
+
+                ego_agent.set_route(ego_vehicle.get_location(), point.location)
                 break
 
-        return ego_setup_success
+        return ego_agent, ego_vehicle
+
+    def try_spawn_ego(self, ego_vehicle_bp, spawn_points):
+        ego_vehicle = None
+        for p in spawn_points:
+            ego_vehicle = self.world.try_spawn_actor(ego_vehicle_bp, p)
+            if ego_vehicle:
+                ego_vehicle.set_autopilot(False)
+                return ego_vehicle
+        return ego_vehicle
 
     def record(self):
         """
@@ -163,3 +189,6 @@ class CarlaExtractor(object):
 
 if __name__ == '__main__':
     c = CarlaExtractor()
+    _, v = c.set_ego()
+    c.set_spectator(v)
+    c.set_sensors(v)
