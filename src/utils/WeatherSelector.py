@@ -2,11 +2,6 @@
 Defines a few custom weather presets. Up until version 0.9.6, carla has a few native ones; however, on my data capture
 setup they don't seem to differ that much one from another
 """
-import sys
-
-import settings
-
-sys.path.append(settings.CARLA_EGG_PATH)
 
 
 # https://carla.readthedocs.io/en/latest/python_api/#carlaweatherparameters-class

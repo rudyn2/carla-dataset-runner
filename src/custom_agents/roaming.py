@@ -1,8 +1,8 @@
 import carla
 import numpy as np
-from controller import PIDController
-from custom_agents.navigation.agent import Agent
-from custom_agents.navigation.local_planner import LocalPlannerNew
+from PythonAPI.agents.tools.controller import PIDController
+from PythonAPI.agents.navigation.agent import Agent
+from PythonAPI.agents.navigation.local_planner import LocalPlannerNew
 
 TURNING_PID = {
     'K_P': 1.5,

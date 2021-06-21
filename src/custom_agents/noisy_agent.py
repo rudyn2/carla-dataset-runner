@@ -1,9 +1,9 @@
 import carla
 import numpy as np
-from agents.tools.vehicle_position import get_vehicle_position, get_vehicle_orientation
-from controller import PIDController
+from PythonAPI.agents.tools.vehicle_position import get_vehicle_position, get_vehicle_orientation
+from PythonAPI.agents.tools.controller import PIDController
 
-from roaming import RoamingAgentMine
+from .roaming import RoamingAgentMine
 
 
 class NoisyAgent(RoamingAgentMine):

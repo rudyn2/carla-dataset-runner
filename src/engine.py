@@ -1,3 +1,6 @@
+from custom_agents.noisy_agent import NoisyAgent
+
+
 class CarlaExtractor(object):
     """
     Class created to orchestrate the simulation runtime. It should be able to spawn vehicles, spawn pedestrians,

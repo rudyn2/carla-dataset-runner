@@ -13,7 +13,7 @@ from collections import deque
 
 import carla
 import numpy as np
-from custom_agents.tools.misc import get_speed
+from ..tools.misc import get_speed
 
 
 class VehiclePIDController():

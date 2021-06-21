@@ -15,7 +15,7 @@ from enum import Enum
 
 import carla
 import numpy as np
-from custom_agents.tools.misc import is_within_distance_ahead, compute_magnitude_angle, compute_yaw_difference
+from ..tools.misc import is_within_distance_ahead, compute_magnitude_angle, compute_yaw_difference
 from skimage.io import imread
 
 WORLD_OFFSETS = {

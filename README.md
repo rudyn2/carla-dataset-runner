@@ -31,9 +31,7 @@ pip3 install h5py
 
 Refer to https://carla.readthedocs.io/en/latest/getting_started/ and https://github.com/carla-simulator/carla/blob/master/Docs/download.md
 
-4. Set the python path for the carla egg file
-
-Open the [settings.py](settings.py) file and change the carla egg path to your own.
+4. Set the python path for the carla egg file and python api
 
 5. Create a dir to store the to-be recorded data
 

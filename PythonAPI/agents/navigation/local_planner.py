@@ -14,8 +14,8 @@ from enum import Enum
 
 import carla
 import numpy as np
-from custom_agents.navigation.controller import VehiclePIDController
-from custom_agents.tools.misc import distance_vehicle, draw_waypoints
+from .controller import VehiclePIDController
+from ..tools.misc import distance_vehicle, draw_waypoints
 
 
 class RoadOption(Enum):

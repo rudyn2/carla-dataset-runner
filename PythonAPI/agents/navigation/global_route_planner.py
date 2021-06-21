@@ -10,8 +10,8 @@ import math
 import carla
 import networkx as nx
 import numpy as np
-from custom_agents.navigation.local_planner import RoadOption
-from custom_agents.tools.misc import vector
+from .local_planner import RoadOption
+from ..tools.misc import vector
 
 
 class GlobalRoutePlanner(object):

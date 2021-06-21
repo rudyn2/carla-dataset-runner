@@ -5,14 +5,7 @@
 #
 # This work is licensed under the terms of the MIT license.
 # For a copy, see <https://opensource.org/licenses/MIT>.
-import sys
-import os
-import settings
-sys.path.append(settings.CARLA_EGG_PATH)
 import carla
-import random
-
-import numpy as np
 try:
     import queue
 except ImportError:

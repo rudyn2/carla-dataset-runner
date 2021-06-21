@@ -29,19 +29,9 @@ Town05 - 150 vehic 150 walk
 import argparse
 import os
 import sys
+import pathlib
+from src.engine import CarlaExtractor
 
-initial_path = set(sys.path)
-sys.path.append(settings.CARLA_EGG_PATH)
-
-# ADD
-try:
-    sys.path.append(os.path.abspath('.') + '/PythonAPI/carla')
-except IndexError:
-    pass
-
-new_paths = set(sys.path) - initial_path
-for path in new_paths:
-    print(f"Added: {path} to the Path")
 
 # TODO: Add main routine for data extraction.
 # TODO: Implement logging (wandb could be a good option)

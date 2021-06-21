@@ -11,10 +11,10 @@ waypoints and avoiding other vehicles.
 The agent also responds to traffic lights. """
 
 import carla
-from custom_agents.navigation.agent import Agent, AgentState
-from custom_agents.navigation.global_route_planner import GlobalRoutePlanner
-from custom_agents.navigation.global_route_planner_dao import GlobalRoutePlannerDAO
-from custom_agents.navigation.local_planner import LocalPlanner
+from .agent import Agent, AgentState
+from .global_route_planner import GlobalRoutePlanner
+from .global_route_planner_dao import GlobalRoutePlannerDAO
+from .local_planner import LocalPlanner
 
 
 class BasicAgent(Agent):
