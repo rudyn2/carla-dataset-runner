@@ -9,3 +9,4 @@ __pycache__/
 data/
 .ipynb_checkpoints
 .idea
+/.idea/
