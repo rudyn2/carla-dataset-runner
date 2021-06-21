@@ -1,7 +1,7 @@
 from custom_agents.noisy_agent import NoisyAgent
 import carla
 from termcolor import colored
-from utils.SensorHanlers import on_collision
+from utils.SensorHandlers import on_collision
 import numpy as np
 import weakref
 import random
@@ -165,7 +165,7 @@ class CarlaExtractor(object):
 
 
 if __name__ == '__main__':
+
     c = CarlaExtractor()
     _, v = c.set_ego()
-    c.set_spectator(v)
     c.set_sensors(v)
