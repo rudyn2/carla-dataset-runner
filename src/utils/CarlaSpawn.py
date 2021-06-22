@@ -20,7 +20,6 @@ class CarlaSpawn(object):
         self.walkers_list = []
         self.all_id = []
         self.all_actors = []
-        self.synchronous_master = False  # flag to track whether the simulation is in sync mode
 
         # get some important objects from the world
         self.world = carla_client.get_world()
@@ -33,6 +32,7 @@ class CarlaSpawn(object):
 
         settings = self.world.get_settings()
         self.traffic_manager.set_synchronous_mode(True)
+        self.synchronous_master = settings.synchronous_mode
         if not settings.synchronous_mode:
             self.synchronous_master = True
             settings.synchronous_mode = True
@@ -178,11 +178,10 @@ class CarlaSpawn(object):
         Destroy all the actors tracked in the local state.
         """
         # stop synchronous mode before destroying actors
-        if self.synchronous_master:
-            settings = self.world.get_settings()
-            settings.synchronous_mode = False
-            settings.fixed_delta_seconds = None
-            self.world.apply_settings(settings)
+        settings = self.world.get_settings()
+        settings.synchronous_mode = False
+        settings.fixed_delta_seconds = None
+        self.world.apply_settings(settings)
 
         self.client.apply_batch([carla.command.DestroyActor(x) for x in self.vehicles_list])
 

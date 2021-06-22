@@ -65,12 +65,23 @@ def run(args_):
                 print(colored(f"weather: {weather.__name__}", "white"))
                 engine.set_weather(weather())
                 run_id = str(uuid.uuid4())
-                media, meta = engine.record(vehicles=args_.vehicles,
-                                            walkers=args_.walkers,
-                                            max_frames=args_.T,
-                                            debug=args_.debug)
-                hdf5_saver.save_one_ego_run(run_id=run_id, media_data=media)
-                json_saver.save_one_ego_run(run_id=run_id, info_data=meta)
+
+                tries = 3
+                while tries > 0:
+                    try:
+                        media, meta = engine.record(vehicles=args_.vehicles,
+                                                    walkers=args_.walkers,
+                                                    noisy=args_.noise,
+                                                    max_frames=args_.T,
+                                                    debug=args_.debug)
+                        if len(media) == 0 and len(meta) == 0:
+                            raise ValueError
+                        hdf5_saver.save_one_ego_run(run_id=run_id, media_data=media)
+                        json_saver.save_one_ego_run(run_id=run_id, info_data=meta)
+                        break
+                    except Exception:
+                        print(colored("Something happened, restarting....", "red"))
+                        tries -= 1
 
         print(colored("Extraction finished!", "cyan"))
 
@@ -91,10 +102,11 @@ if __name__ == "__main__":
     parser.add_argument('-T', default=100, type=int,
                         help='number of frames to record per ego execution')
     parser.add_argument('-t', '--town', default='Town01', type=str, help="town to use")
-    parser.add_argument('-wi', '--width', default=1024, type=int, help="camera rgb and depth sensor width in pixels")
-    parser.add_argument('-he', '--height', default=768, type=int, help="camera rgb and depth sensor width in pixels")
-    parser.add_argument('-ve', '--vehicles', default=0, type=int, help="number of vehicles to spawn in the simulation")
-    parser.add_argument('-wa', '--walkers', default=0, type=int, help="number of walkers to spawn in the simulation")
+    parser.add_argument('-wi', '--width', default=288, type=int, help="camera rgb and depth sensor width in pixels")
+    parser.add_argument('-he', '--height', default=288, type=int, help="camera rgb and depth sensor width in pixels")
+    parser.add_argument('-ve', '--vehicles', default=100, type=int, help="number of vehicles to spawn in the simulation")
+    parser.add_argument('-wa', '--walkers', default=200, type=int, help="number of walkers to spawn in the simulation")
+    parser.add_argument('--noise', action="store_true")
     parser.add_argument('--debug', action="store_true")
 
     args = parser.parse_args()

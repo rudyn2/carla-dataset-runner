@@ -163,16 +163,23 @@ class CarlaExtractor(object):
                 v.set_autopilot(True)
 
         # find the first location that isn't the ego vehicle location and its far away
-        ego_setup_success = False
+        points_distance = []
         for point in spawn_points:
             dx = point.location.x - ego_vehicle_location.x
             dy = point.location.y - ego_vehicle_location.y
             distance = np.sqrt(dx * dx + dy * dy)
-            if point.location != ego_vehicle.get_location() and distance > 40:
+            if point.location != ego_vehicle.get_location():
+                points_distance.append((point, distance))
 
+        # sort point in descending order according to their distance to the ego
+        points_distance = sorted(points_distance, key=lambda x: x[1], reverse=True)
+        for point, _ in points_distance:
+            try:
                 ego_agent.set_route(ego_vehicle.get_location(), point.location)
                 info['destination'] = point
                 break
+            except Exception:
+                continue
 
         return ego_agent, ego_vehicle, info
 
@@ -191,12 +198,12 @@ class CarlaExtractor(object):
         self.world.debug.draw_string(end_location, "END", draw_shadow=False,
                                      color=carla.Color(r=255, g=0, b=0), life_time=30, persistent_lines=True)
 
-    def record(self, vehicles: int, walkers: int, max_frames: int = 500, skip_frames: int = 5, debug: bool = False):
+    def record(self, vehicles: int, walkers: int, noisy: bool = True, max_frames: int = 500, skip_frames: int = 5, debug: bool = False):
         """
         Use the ego to record all the data in one episode. Returns the data needed for hdf5 saver and json saver.
         """
 
-        ego_agent, ego_vehicle, info = self.set_ego(noisy=True)
+        ego_agent, ego_vehicle, info = self.set_ego(noisy=noisy)
         destination = info['destination']
         # SPAWN SURROUNDING VEHICLES AND PEDESTRIANS HERE
         sensors, collision_sensor = self.set_sensors(ego_vehicle, self.sensor_width, self.sensor_height)
