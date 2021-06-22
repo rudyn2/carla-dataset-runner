@@ -1,0 +1,13 @@
+// See https://aka.ms/vscode-remote/devcontainer.json for the devcontainer.json format details or
+// https://aka.ms/vscode-dev-containers/definitions for sample configurations.
+{
+    "dockerFile": "Dockerfile",
+    "name": "carla-client",
+    "extensions": [
+      "ms-python.python"
+    ],
+    "runArgs": [
+      "--gpus=all"
+    ],
+    "settings": {}
+  }

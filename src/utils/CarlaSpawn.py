@@ -38,6 +38,8 @@ class CarlaSpawn(object):
             settings.synchronous_mode = True
             settings.fixed_delta_seconds = delta_seconds
             self.world.apply_settings(settings)
+        else:
+            self.synchronous_master = False
 
     def spawn_actors(self,
                      vehicles: int,
@@ -156,7 +158,10 @@ class CarlaSpawn(object):
         all_actors = self.world.get_actors(self.all_id)
 
         # wait for a tick to ensure client receives the last transform of the walkers we have just created
-        self.world.tick()
+        if not self.synchronous_master:
+            self.world.wait_for_tick()
+        else:
+            self.world.tick()
 
         # 5. initialize each controller and set target to walk to (list is [controler, actor, controller, actor ...])
         # set how many pedestrians can cross the road
@@ -173,15 +178,23 @@ class CarlaSpawn(object):
         self.all_actors = all_actors
         print('spawned %d vehicles and %d walkers.' % (len(self.vehicles_list), len(self.walkers_list)))
 
+
+        for _ in range(10):
+            if not self.synchronous_master:
+                self.world.wait_for_tick()
+            else:
+                self.world.tick()
+
     def destroy_actors(self):
         """
         Destroy all the actors tracked in the local state.
         """
         # stop synchronous mode before destroying actors
-        settings = self.world.get_settings()
-        settings.synchronous_mode = False
-        settings.fixed_delta_seconds = None
-        self.world.apply_settings(settings)
+        if self.synchronous_master:
+            settings = self.world.get_settings()
+            settings.synchronous_mode = False
+            settings.fixed_delta_seconds = None
+            self.world.apply_settings(settings)
 
         self.client.apply_batch([carla.command.DestroyActor(x) for x in self.vehicles_list])
 
