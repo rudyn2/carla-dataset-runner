@@ -22,17 +22,17 @@ def get_vehicle_orientation(world_map, vehicle):
     """
 
     # get lane tangent vector
-    a1 = world_map.get_waypoint(vehicle.get_location(), project_to_road=True)
-    b1 = a1.next(2.0)[0]
-    vector_lane = b1.transform.location - a1.transform.location
+    # a1 = world_map.get_waypoint(vehicle.get_location(), project_to_road=True)
+    # b1 = a1.next(2.0)[0]
+    # vector_lane = b1.transform.location - a1.transform.location
+    #
+    # # get vehicle vector
+    # vertices = vehicle.bounding_box.get_world_vertices(vehicle.get_transform())
+    # a2 = vertices[0]
+    # b2 = vertices[4]
+    # vector_vehicle = b2 - a2
 
-    # get vehicle vector
-    vertices = vehicle.bounding_box.get_world_vertices(vehicle.get_transform())
-    a2 = vertices[0]
-    b2 = vertices[4]
-    vector_vehicle = b2 - a2
-
-    return vec3d_angle(vector_vehicle, vector_lane, deg=True)
+    return 0
 
 
 def get_vehicle_position(world_map, vehicle):

@@ -1,7 +1,6 @@
 import carla
 import random
 import logging
-from carla import VehicleLightState as vls
 
 
 class CarlaSpawn(object):
@@ -25,13 +24,10 @@ class CarlaSpawn(object):
         self.world = carla_client.get_world()
         self.map = self.world.get_map()
         self.delta_seconds = delta_seconds
-        self.traffic_manager = self.client.get_trafficmanager(tm_port)
-        self.traffic_manager.set_global_distance_to_leading_vehicle(distance_to_leading_vehicle)
         self.blueprints_vehicles = self.world.get_blueprint_library().filter("vehicle.*")
         self.blueprints_walkers = self.world.get_blueprint_library().filter("walker.pedestrian.*")
 
         settings = self.world.get_settings()
-        self.traffic_manager.set_synchronous_mode(True)
         self.synchronous_master = settings.synchronous_mode
         if not settings.synchronous_mode:
             self.synchronous_master = True
@@ -68,7 +64,6 @@ class CarlaSpawn(object):
 
         spawn_actor = carla.command.SpawnActor
         set_autopilot = carla.command.SetAutopilot
-        set_vehicle_light_state = carla.command.SetVehicleLightState
         future_actor = carla.command.FutureActor
 
         # region: SPAWN VEHICLES
@@ -85,13 +80,10 @@ class CarlaSpawn(object):
                 blueprint.set_attribute('driver_id', driver_id)
             blueprint.set_attribute('role_name', 'autopilot')
 
-            # prepare the light state of the cars to spawn
-            light_state = vls.Position | vls.LowBeam | vls.LowBeam
-
             # spawn the cars and set their autopilot and light state all together
             batch.append(spawn_actor(blueprint, transform)
-                         .then(set_autopilot(future_actor, True, self.traffic_manager.get_port()))
-                         .then(set_vehicle_light_state(future_actor, light_state)))
+                         .then(set_autopilot(future_actor, True))
+                         )
 
         for response in self.client.apply_batch_sync(batch, self.synchronous_master):
             if response.error:
@@ -111,33 +103,20 @@ class CarlaSpawn(object):
                 spawn_points.append(spawn_point)
         # 2. we spawn the walker object
         batch = []
-        walker_speed = []
         for spawn_point in spawn_points:
             walker_bp = random.choice(self.blueprints_walkers)
-            # set as not invincible
+            # set as not invencible
             if walker_bp.has_attribute('is_invincible'):
                 walker_bp.set_attribute('is_invincible', 'false')
-            # set the max speed
-            if walker_bp.has_attribute('speed'):
-                if random.random() > percentage_pedestrians_running:
-                    # walking
-                    walker_speed.append(walker_bp.get_attribute('speed').recommended_values[1])
-                else:
-                    # running
-                    walker_speed.append(walker_bp.get_attribute('speed').recommended_values[2])
-            else:
-                print("Walker has no speed")
-                walker_speed.append(0.0)
             batch.append(spawn_actor(walker_bp, spawn_point))
+
         results = self.client.apply_batch_sync(batch, True)
-        walker_speed2 = []
+
         for i in range(len(results)):
             if results[i].error:
                 logging.error(results[i].error)
             else:
                 self.walkers_list.append({"id": results[i].actor_id})
-                walker_speed2.append(walker_speed[i])
-        walker_speed = walker_speed2
         # 3. we spawn the walker controller
         batch = []
         walker_controller_bp = self.world.get_blueprint_library().find('controller.ai.walker')
@@ -159,19 +138,15 @@ class CarlaSpawn(object):
         self.world.tick()
 
         # 5. initialize each controller and set target to walk to (list is [controler, actor, controller, actor ...])
-        # set how many pedestrians can cross the road
-        self.world.set_pedestrians_cross_factor(percentage_pedestrians_crossing)
         for i in range(0, len(self.all_id), 2):
             # start walker
             all_actors[i].start()
             # set walk to random point
             all_actors[i].go_to_location(self.world.get_random_location_from_navigation())
-            # max speed
-            all_actors[i].set_max_speed(float(walker_speed[int(i / 2)]))
-        # endregion
+            # random max speed
+            all_actors[i].set_max_speed(1 + random.random())  # max speed between 1 and 2 (default is 1.4 m/s)
 
-        self.all_actors = all_actors
-        print('spawned %d vehicles and %d walkers.' % (len(self.vehicles_list), len(self.walkers_list)))
+        print('spawned %d vehicles and %d walkers' % (len(self.vehicles_list), len(self.walkers_list)))
 
     def destroy_actors(self):
         """
