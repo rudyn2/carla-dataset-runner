@@ -33,6 +33,7 @@ from src.utils.JsonSaver import JsonSaver
 from src.utils.WeatherSelector import WeatherSelector
 from termcolor import colored
 import uuid
+import traceback
 
 
 # TODO: Implement cloud  logging (wandb could be a good option)
@@ -79,7 +80,9 @@ def run(args_):
                         hdf5_saver.save_one_ego_run(run_id=run_id, media_data=media)
                         json_saver.save_one_ego_run(run_id=run_id, info_data=meta)
                         break
-                    except Exception:
+                    except Exception as e:
+                        traceback.print_exc()
+                        print(e)
                         print(colored("Something happened, restarting....", "red"))
                         tries -= 1
 
