@@ -15,6 +15,7 @@ RUN apt-get install libjpeg-turbo8 -y
 SHELL ["conda", "run", "-n", "carla-data-collector", "/bin/bash", "-c"]
 RUN pip install scikit-image
 RUN pip install termcolor
+RUN pip install wandb
 
 # create important folders
 RUN mkdir /home/carla-dataset-runner
