@@ -27,11 +27,6 @@ Town05 - 150 vehic 150 walk
 """
 
 import argparse
-import os
-import sys
-import pathlib
-import time
-
 from src.engine import CarlaExtractor
 from src.utils.HDF5Saver import HDF5Saver
 from src.utils.JsonSaver import JsonSaver
@@ -40,15 +35,14 @@ from termcolor import colored
 import uuid
 
 
-# TODO: Add main routine for data extraction.
 # TODO: Implement cloud  logging (wandb could be a good option)
 def run(args_):
-
     hdf5_file_path = str(pathlib.Path(args_.hdf5_file).absolute()) + ".hdf5"
     json_file_path = str(pathlib.Path(args_.hdf5_file).absolute()) + ".json"
     print(colored(f"Host: {args_.host}\nPort: {args_.port}\nSensor width: {args_.width}"
                   f"\nSensor height: {args_.height}\nTown: {args_.town}\nVehicles: {args_.vehicles}"
-                  f"\nWalkers: {args_.walkers}\nHDF5 output path: {hdf5_file_path}\nJSON output path: {json_file_path}", "magenta"))
+                  f"\nWalkers: {args_.walkers}\nHDF5 output path: {hdf5_file_path}\nJSON output path: {json_file_path}",
+                  "magenta"))
 
     engine = CarlaExtractor(host=args_.host,
                             port=args_.port,
@@ -85,6 +79,9 @@ def run(args_):
 
 
 if __name__ == "__main__":
+    import sys
+    import pathlib
+
     parser = argparse.ArgumentParser(description="Settings for the data capture",
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('hdf5_file', default=None, type=str, help='name of hdf5 file where data will be stored')

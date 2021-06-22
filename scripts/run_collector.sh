@@ -1,3 +1,3 @@
 #!/bin/bash
 
-nvidia-docker run -v ~/cachefs/:/home/carla-dataset-runner/data -e DOCKER_HOST_IP="172.18.0.1" --network host carla-dataset-collector /bin/bash
+docker run --name carla-client -v ~/cachefs:/home/carla-dataset-runner/data --network host -it carla-client /bin/bash

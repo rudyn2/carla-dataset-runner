@@ -3,6 +3,7 @@ import carla
 from termcolor import colored
 from .utils.SensorHandlers import on_collision, process_rgb_img, process_depth_data, process_semantic_img
 from .utils.SyncMode import CarlaSyncMode
+from .utils.CarlaSpawn import CarlaSpawn
 import numpy as np
 import weakref
 import random
@@ -36,31 +37,30 @@ class CarlaExtractor(object):
                  sensor_height: int = 288,
                  host: str = "localhost",
                  port: int = 2000,
-                 town: str = 'Town01'):
+                 town: str = 'Town01',
+                 fps: int = 30):
 
         print(colored("Connecting to CARLA...", "white"))
         self.client = carla.Client(host, port)
-        self.client.set_timeout(10.0)
+        self.client.set_timeout(20.0)
         self.client.load_world(town)
         self.world = self.client.get_world()
         self.blueprint_library = self.world.get_blueprint_library()
         self.map = self.world.get_map()
+        self.spawn_manager = CarlaSpawn(carla_client=self.client, delta_seconds=1/fps)
         print(colored(f"Successfully connected to CARLA at {host}:{port}", "green"))
 
         self.sensor_width, self.sensor_height = sensor_width, sensor_height
+        self.fps = fps
         self.sensor_list = []
         self.collision_info = {}
-
-    def reset(self):
-        # TODO: Figure out how to reset the simulation cleanly
-        raise NotImplementedError
 
     def set_weather(self, weather_option):
         weather = carla.WeatherParameters(*weather_option)
         self.world.set_weather(weather)
 
     def set_actors(self, vehicles: int, walkers: int):
-        pass
+        self.spawn_manager.spawn_actors(vehicles, walkers)
 
     def set_camera(self, vehicle, sensor_width: int, sensor_height: int, fov: int) -> object:
         bp = self.blueprint_library.find('sensor.camera.rgb')
@@ -194,77 +194,79 @@ class CarlaExtractor(object):
     def record(self, vehicles: int, walkers: int, max_frames: int = 500, skip_frames: int = 5, debug: bool = False):
         """
         Use the ego to record all the data in one episode. Returns the data needed for hdf5 saver and json saver.
-        # TODO: Specify method signature.
         """
 
         ego_agent, ego_vehicle, info = self.set_ego(noisy=True)
         destination = info['destination']
         # SPAWN SURROUNDING VEHICLES AND PEDESTRIANS HERE
         sensors, collision_sensor = self.set_sensors(ego_vehicle, self.sensor_width, self.sensor_height)
-        self.set_actors(vehicles=vehicles, walkers=walkers)
-
-        if debug:
-            self.show_route(ego_vehicle.get_location(), destination.location)
-
-        desc = "Frame: {}/{} SPEED={:.2f} HLC={} LANE_DISTANCE={:2f} LANE_ORIENTATION={:.2F}"
-        pbar = tqdm(initial=0, leave=False, total=max_frames, desc=desc.format(0, max_frames, 0, 0, 0, 0))
         media, meta = [], []
-        print(colored("[*] Initializing extraction", "white"))
-        with CarlaSyncMode(self.world, *sensors, fps=30) as sync_mode:
-            # warm-up, put the ego vehicle in movement
-            self.skip_frames(ego_agent, ego_vehicle, 15, sync_mode)
 
-            frames = 0
-            while frames <= max_frames:
+        try:
+            self.set_actors(vehicles=vehicles, walkers=walkers)
 
-                self.skip_frames(ego_agent, ego_vehicle, skip_frames, sync_mode)
+            if debug:
+                self.show_route(ego_vehicle.get_location(), destination.location)
 
-                # get data and process it
-                _, rgb, depth, semantic = sync_mode.tick(timeout=2.0)
-                rgb = process_rgb_img(rgb, self.sensor_width, self.sensor_height)
-                depth = process_depth_data(depth, self.sensor_width, self.sensor_height)
-                semantic = process_semantic_img(semantic, self.sensor_width, self.sensor_height)
-                timestamp = round(time.time() * 1000.0)
+            desc = "Frame: {}/{} SPEED={:.2f} HLC={} LANE_DISTANCE={:2f} LANE_ORIENTATION={:.2F}"
+            pbar = tqdm(initial=0, leave=False, total=max_frames, desc=desc.format(0, max_frames, 0, 0, 0, 0))
+            print(colored("[*] Initializing extraction", "white"))
+            with CarlaSyncMode(self.world, *sensors, fps=self.fps) as sync_mode:
+                # warm-up, put the ego vehicle in movement
+                self.skip_frames(ego_agent, ego_vehicle, 15, sync_mode)
 
-                # apply control
-                ego_info = ego_agent.run_step()
-                control = ego_info['control']
-                ego_vehicle.apply_control(control)
+                frames = 0
+                while frames <= max_frames:
 
-                # save data
-                ego_info["control"] = parse_control(ego_info["control"])
-                media.append(dict(timestamp=timestamp, rgb=rgb, depth=depth, semantic=semantic))
-                meta.append(dict(timestamp=timestamp, metadata=ego_info))
+                    self.skip_frames(ego_agent, ego_vehicle, skip_frames, sync_mode)
 
-                # preparing next frame
-                frames += 1
-                pbar.desc = desc.format(frames, max_frames, ego_info["speed"], ego_info["command"],
-                                        ego_info["lane_distance"], ego_info["lane_orientation"])
-                pbar.update(1)
-                self.update_spectator(ego_vehicle)
+                    # get data and process it
+                    _, rgb, depth, semantic = sync_mode.tick(timeout=2.0)
+                    rgb = process_rgb_img(rgb, self.sensor_width, self.sensor_height)
+                    depth = process_depth_data(depth, self.sensor_width, self.sensor_height)
+                    semantic = process_semantic_img(semantic, self.sensor_width, self.sensor_height)
+                    timestamp = round(time.time() * 1000.0)
 
-                # region: check terminal conditions: ego reached destination or an collision has occurred
-                if self._compute_distance(ego_vehicle, destination.location) < 10:
-                    tqdm.write(colored("Early stopping due to ego agent reached its destination", "white"))
-                    frames = max_frames + 1
-                if self.collision_info:
-                    if len(info) > 0:
-                        info[-1]['metadata']['collision'] = self.collision_info
-                    tqdm.write(colored("Early stopping due to collision", "white"))
-                    frames = max_frames + 1
-                # endregion
+                    # apply control
+                    ego_info = ego_agent.run_step()
+                    control = ego_info['control']
+                    ego_vehicle.apply_control(control)
 
-            pbar.close()
+                    # save data
+                    ego_info["control"] = parse_control(ego_info["control"])
+                    media.append(dict(timestamp=timestamp, rgb=rgb, depth=depth, semantic=semantic))
+                    meta.append(dict(timestamp=timestamp, metadata=ego_info))
+
+                    # preparing next frame
+                    frames += 1
+                    pbar.desc = desc.format(frames, max_frames, ego_info["speed"], ego_info["command"],
+                                            ego_info["lane_distance"], ego_info["lane_orientation"])
+                    pbar.update(1)
+                    self.update_spectator(ego_vehicle)
+
+                    # region: check terminal conditions: ego reached destination or an collision has occurred
+                    if self._compute_distance(ego_vehicle, destination.location) < 10:
+                        tqdm.write(colored("Early stopping due to ego agent reached its destination", "white"))
+                        frames = max_frames + 1
+                    if self.collision_info:
+                        if len(info) > 0:
+                            info[-1]['metadata']['collision'] = self.collision_info
+                        tqdm.write(colored("Early stopping due to collision", "white"))
+                        frames = max_frames + 1
+                    # endregion
+                pbar.close()
             print(colored("[+] Extraction completed successfully, exiting sync mode...", "green"))
+        finally:
 
-        # destroy sensors and vehicle
-        for sensor in [*sensors, collision_sensor]:
-            if sensor.is_listening:
-                sensor.stop()
-            if sensor.is_alive:
-                sensor.destroy()
-        if ego_vehicle.is_alive:
-            ego_vehicle.destroy()
+            # destroy sensors, ego vehicle and social actors
+            for sensor in [*sensors, collision_sensor]:
+                if sensor.is_listening:
+                    sensor.stop()
+                if sensor.is_alive:
+                    sensor.destroy()
+            if ego_vehicle.is_alive:
+                ego_vehicle.destroy()
+            self.spawn_manager.destroy_actors()
 
         return media, meta
 
