@@ -255,8 +255,8 @@ class CarlaExtractor(object):
                         tqdm.write(colored("Early stopping due to ego agent reached its destination", "white"))
                         frames = max_frames + 1
                     if self.collision_info:
-                        if len(info) > 0:
-                            info[-1]['metadata']['collision'] = self.collision_info
+                        if len(meta) > 0:
+                            meta[-1]['metadata']['collision'] = self.collision_info
                         tqdm.write(colored("Early stopping due to collision", "white"))
                         frames = max_frames + 1
                     # endregion
