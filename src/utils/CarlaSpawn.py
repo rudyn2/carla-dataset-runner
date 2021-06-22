@@ -43,7 +43,7 @@ class CarlaSpawn(object):
         """
         Spawn a certain amount of vehicles and walkers.
         """
-
+        due_tick_cue = False
         # get blueprints of vehicles that aren't prone to collide
         bps = [x for x in self.blueprints_vehicles if int(x.get_attribute('number_of_wheels')) == 4]
         bps = [x for x in bps if not x.id.endswith('isetta')]
@@ -85,7 +85,7 @@ class CarlaSpawn(object):
                          .then(set_autopilot(future_actor, True))
                          )
 
-        for response in self.client.apply_batch_sync(batch, self.synchronous_master):
+        for response in self.client.apply_batch_sync(batch, due_tick_cue):
             if response.error:
                 logging.error(response.error)
             else:
@@ -110,7 +110,7 @@ class CarlaSpawn(object):
                 walker_bp.set_attribute('is_invincible', 'false')
             batch.append(spawn_actor(walker_bp, spawn_point))
 
-        results = self.client.apply_batch_sync(batch, True)
+        results = self.client.apply_batch_sync(batch, due_tick_cue)
 
         for i in range(len(results)):
             if results[i].error:
@@ -122,7 +122,7 @@ class CarlaSpawn(object):
         walker_controller_bp = self.world.get_blueprint_library().find('controller.ai.walker')
         for i in range(len(self.walkers_list)):
             batch.append(spawn_actor(walker_controller_bp, carla.Transform(), self.walkers_list[i]["id"]))
-        results = self.client.apply_batch_sync(batch, True)
+        results = self.client.apply_batch_sync(batch, due_tick_cue)
         for i in range(len(results)):
             if results[i].error:
                 logging.error(results[i].error)
@@ -135,7 +135,7 @@ class CarlaSpawn(object):
         all_actors = self.world.get_actors(self.all_id)
 
         # wait for a tick to ensure client receives the last transform of the walkers we have just created
-        self.world.tick()
+        self.world.wait_for_tick()
 
         # 5. initialize each controller and set target to walk to (list is [controler, actor, controller, actor ...])
         for i in range(0, len(self.all_id), 2):
@@ -161,8 +161,10 @@ class CarlaSpawn(object):
         self.client.apply_batch([carla.command.DestroyActor(x) for x in self.vehicles_list])
 
         # stop walker controllers (list is [controller, actor, controller, actor ...])
-        for i in range(0, len(self.all_id), 2):
-            self.all_actors[i].stop()
+        # for i in range(0, len(self.all_id), 2):
+        #     self.all_actors[i].stop()
+        for actor in self.all_actors:
+            actor.stop()
 
         self.client.apply_batch([carla.command.DestroyActor(x) for x in self.all_id])
 
