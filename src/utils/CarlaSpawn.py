@@ -25,6 +25,7 @@ class CarlaSpawn(object):
         # get some important objects from the world
         self.world = carla_client.get_world()
         self.map = self.world.get_map()
+        self.delta_seconds = delta_seconds
         self.traffic_manager = self.client.get_trafficmanager(tm_port)
         self.traffic_manager.set_global_distance_to_leading_vehicle(distance_to_leading_vehicle)
         self.blueprints_vehicles = self.world.get_blueprint_library().filter("vehicle.*")

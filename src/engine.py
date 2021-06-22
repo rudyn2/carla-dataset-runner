@@ -204,12 +204,11 @@ class CarlaExtractor(object):
 
         try:
             self.set_actors(vehicles=vehicles, walkers=walkers)
-
             if debug:
                 self.show_route(ego_vehicle.get_location(), destination.location)
-
             desc = "Frame: {}/{} SPEED={:.2f} HLC={} LANE_DISTANCE={:2f} LANE_ORIENTATION={:.2F}"
             pbar = tqdm(initial=0, leave=False, total=max_frames, desc=desc.format(0, max_frames, 0, 0, 0, 0))
+
             print(colored("[*] Initializing extraction", "white"))
             with CarlaSyncMode(self.world, *sensors, fps=self.fps) as sync_mode:
                 # warm-up, put the ego vehicle in movement
