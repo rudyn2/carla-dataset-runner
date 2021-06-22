@@ -24,6 +24,10 @@ RUN mkdir /home/carla-dataset-runner/data
 RUN mkdir /home/carla-dataset-runner/src
 RUN mkdir /home/carla-dataset-runner/carla_egg
 
+# Install requirements
+COPY requirements.txt /home/carla-dataset-runner/requirements.txt
+RUN pip install -r /home/carla-dataset-runner/requirements.txt
+
 # copy the code
 COPY carla_egg/carla-0.9.11-py3.7-linux-x86_64.egg /home/carla-dataset-runner/carla_egg/
 COPY PythonAPI/ /home/carla-dataset-runner/PythonAPI/
