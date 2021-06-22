@@ -34,9 +34,12 @@ from src.utils.WeatherSelector import WeatherSelector
 from termcolor import colored
 import uuid
 import traceback
+import wandb
 
 
-# TODO: Implement cloud  logging (wandb could be a good option)
+wandb.init(project='tsad', entity='autonomous-driving')
+
+
 def run(args_):
     hdf5_file_path = str(pathlib.Path(args_.hdf5_file).absolute()) + ".hdf5"
     json_file_path = str(pathlib.Path(args_.hdf5_file).absolute()) + ".json"
