@@ -131,21 +131,16 @@ class CarlaExtractor(object):
 
         print(colored("spawning vehicles", "white"))
         # Spawn surrounding vehicles
-        random.shuffle(vehicle_spawn_points)
         count = vehicles
-        if count > 0:
-            for spawn_point in vehicle_spawn_points:
-                random_vehicle = self._try_spawn_random_vehicle_at(spawn_point)
-                if random_vehicle:
-                    spawned_vehicles.append(random_vehicle)
-                    count -= 1
-                if count <= 0:
-                    break
-        while count > 0:
+        max_tries = count * 2
+        while max_tries > 0:
             random_vehicle = self._try_spawn_random_vehicle_at(random.choice(vehicle_spawn_points))
             if random_vehicle:
                 spawned_vehicles.append(random_vehicle)
                 count -= 1
+            if count <= 0:
+                break
+            max_tries -= 1
 
         print(colored("spawning walkers", "white"))
         # Spawn pedestrians
@@ -157,24 +152,16 @@ class CarlaExtractor(object):
                 spawn_point.location = loc
                 walker_spawn_points.append(spawn_point)
 
-        random.shuffle(walker_spawn_points)
         count = walkers
-        if count > 0:
-            for spawn_point in walker_spawn_points:
-                random_walker, random_walker_controller = self._try_spawn_random_walker_at(spawn_point)
-                if random_walker and random_walker_controller:
-                    spawned_walkers.append(random_walker)
-                    spawned_walker_controllers.append(random_walker_controller)
-                    count -= 1
-                if count <= 0:
-                    break
         max_tries = count * 2
-        while count > 0 and max_tries > 0:
+        while max_tries > 0:
             random_walker, random_walker_controller = self._try_spawn_random_walker_at(random.choice(walker_spawn_points))
             if random_walker and random_walker_controller:
                 spawned_walkers.append(random_walker)
                 spawned_walker_controllers.append(random_walker_controller)
                 count -= 1
+            if count <= 0:
+                break
             max_tries -= 1
 
         print(colored("activating autopilots", "white"))
