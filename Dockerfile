@@ -1,5 +1,16 @@
 FROM ubuntu:20.04
-FROM continuumio/miniconda3
+ENV PATH="/root/miniconda3/bin:${PATH}"
+ARG PATH="/root/miniconda3/bin:${PATH}"
+RUN apt-get update
+
+RUN apt-get install -y wget && rm -rf /var/lib/apt/lists/*
+
+RUN wget \
+    https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh \
+    && mkdir /root/.conda \
+    && bash Miniconda3-latest-Linux-x86_64.sh -b \
+    && rm -f Miniconda3-latest-Linux-x86_64.sh 
+RUN apt-get update
 
 # Create the environment:
 COPY environment.yml .
@@ -35,5 +46,6 @@ WORKDIR /home/carla-dataset-runner
 ENV PYTHONPATH "${PYTHONPATH}:/home/carla-dataset-runner/PythonAPI"
 ENV PYTHONPATH "${PYTHONPATH}:/home/carla-dataset-runner/carla_egg/carla-0.9.11-py3.7-linux-x86_64.egg"
 
+RUN ["conda", "init", "--all"]
 # Run data collection, if logs aren't working, prefer to do it manually
 # RUN python main.py test_docker -ve 100 -wa 50 -T 1000 -H 172.26.0.1 -t Town01 --width 288 --height 288 --routes /home/carla-dataset-runner/routes/routes_training.xml
