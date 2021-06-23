@@ -87,6 +87,7 @@ def run(args_):
                         traceback.print_exc()
                         print(e)
                         print(colored("Something happened, restarting....", "red"))
+                        engine.reset()
                         tries -= 1
 
         print(colored("Extraction finished!", "cyan"))
