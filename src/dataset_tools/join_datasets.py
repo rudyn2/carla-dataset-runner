@@ -4,8 +4,8 @@ Tool to join hdf5 datasets.
 import h5py
 import json
 import argparse
-from hdf5_saver import HDF5Saver
-from json_saver import JsonSaver
+from src.utils.HDF5Saver import HDF5Saver
+from src.utils.JsonSaver import JsonSaver
 from glob import glob
 import numpy as np
 from tqdm import tqdm
@@ -36,14 +36,18 @@ class Merger(object):
         for hdf5_file in hdf5_files:
             print(hdf5_file)
         for hdf5_file in hdf5_files:
-            with h5py.File(hdf5_file, "r") as f:
-                self.process_hdf5_file(f)
+            print(f"Processing: {hdf5_file}")
+            try:
+                with h5py.File(hdf5_file, "r") as f:
+                    self.process_hdf5_file(f)
+            except RuntimeError:
+                print(f"An error occurred when trying to process: {hdf5_file}, skipping...")
 
     def process_hdf5_file(self, file: h5py.File):
         """
         Save all episodes of provided file
         """
-        for run_id in tqdm(file.keys(), "Processing..."):
+        for run_id in file.keys():
             if run_id in self.metadata.keys():
                 image_ts = list(file[run_id].keys())
                 meta_ts = list(self.metadata[run_id].keys())
@@ -60,7 +64,7 @@ class Merger(object):
                         "metadata": self.metadata[run_id][ts]
                     } for ts in meta_ts]
 
-                    self.hdf5_saver.save_one_ego_run(run_id, media_data, verbose=False)
+                    self.hdf5_saver.save_one_ego_run(run_id=run_id, media_data=media_data, verbose=False)
                     self.json_saver.save_one_ego_run(run_id=run_id, info_data=info_data)
                     self.total_saved += 1
                 else:
@@ -73,7 +77,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Merger utility",
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('datasets_folder', default='../dataset', type=str,
-                        help='Path to dataset (just name, without extension')
+                        help='Path to dataset folder (just name, without extension)')
     parser.add_argument('--output', type=str, default="merge", help="Output path name (without extensions)")
     args = parser.parse_args()
     i = Merger(args.datasets_folder, args.output)

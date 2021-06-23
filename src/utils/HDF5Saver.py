@@ -12,13 +12,14 @@ class HDF5Saver:
         self.file.attrs['sensor_width'] = sensor_width
         self.file.attrs['sensor_height'] = sensor_height
 
-    def save_one_ego_run(self, run_id: str, media_data: list):
+    def save_one_ego_run(self, run_id: str, media_data: list, verbose: bool = False):
         # if a group already exits override its content
         if run_id in self.file.keys():
             del self.file[run_id]
 
         ego_run_group = self.file.create_group(run_id)
-        for frame_dict in tqdm(media_data, "Saving images "):
+        media_data = tqdm(media_data, "Saving images ") if verbose else media_data
+        for frame_dict in media_data:
             # one frame dict contains rgb, depth and semantic information
             timestamp = str(frame_dict["timestamp"])
             ego_run_timestamp_group = ego_run_group.create_group(timestamp)
