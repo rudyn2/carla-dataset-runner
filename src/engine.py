@@ -385,6 +385,7 @@ class CarlaExtractor(object):
                             meta[-1]['metadata']['collision'] = self.collision_info
                         tqdm.write(colored("Early stopping due to collision", "white"))
                         frames = max_frames + 1
+                        self.collision_info = {}
                     # endregion
                 pbar.close()
             print(colored("[+] Extraction completed successfully, exiting sync mode...", "green"))
