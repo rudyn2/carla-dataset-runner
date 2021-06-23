@@ -37,7 +37,7 @@ import traceback
 import wandb
 
 
-# wandb.init(project='tsad', entity='autonomous-driving')
+wandb.init(project='tsad', entity='autonomous-driving')
 
 
 def run(args_):
