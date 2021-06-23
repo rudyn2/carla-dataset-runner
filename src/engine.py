@@ -64,6 +64,7 @@ class CarlaExtractor(object):
 
     def reset(self):
         self.world = self.client.load_world(self.town)
+        self.collision_info = {}
 
     def _create_vehicle_blueprint(self, actor_filter, color=None, number_of_wheels=None):
         """Create the blueprint for a specific actor type.
