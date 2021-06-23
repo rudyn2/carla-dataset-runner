@@ -9,6 +9,7 @@ import weakref
 import random
 import time
 from tqdm import tqdm
+import traceback
 
 
 def parse_control(c):
@@ -44,6 +45,7 @@ class CarlaExtractor(object):
         self.client = carla.Client(host, port)
         self.client.set_timeout(20.0)
         self.client.load_world(town)
+        self.town = town
         self.world = self.client.get_world()
         self.blueprint_library = self.world.get_blueprint_library()
         self.map = self.world.get_map()
@@ -59,6 +61,9 @@ class CarlaExtractor(object):
     def set_weather(self, weather_option):
         weather = carla.WeatherParameters(*weather_option)
         self.world.set_weather(weather)
+
+    def reset(self):
+        self.world = self.client.load_world(self.town)
 
     def _create_vehicle_blueprint(self, actor_filter, color=None, number_of_wheels=None):
         """Create the blueprint for a specific actor type.
@@ -168,6 +173,7 @@ class CarlaExtractor(object):
         # set autopilot for all the vehicles
         for v in spawned_vehicles:
             v.set_autopilot(True, self.tm_port)
+
         return spawned_vehicles, spawned_walkers, spawned_walker_controllers
 
     def set_camera(self, vehicle, sensor_width: int, sensor_height: int, fov: int) -> object:
@@ -382,6 +388,7 @@ class CarlaExtractor(object):
                     # endregion
                 pbar.close()
             print(colored("[+] Extraction completed successfully, exiting sync mode...", "green"))
+
         finally:
             # destroy sensors, ego vehicle and social actors
             print(colored("destroying sensors", "white"))
@@ -390,6 +397,12 @@ class CarlaExtractor(object):
                     sensor.stop()
                 if sensor.is_alive:
                     sensor.destroy()
+            print(colored("destroying controllers", "white"))
+            for controller in sp_walker_controllers:
+                controller.stop()
+                if controller.is_alive:
+                    controller.destroy()
+
             print(colored("destroying vehicles and walkers", "white"))
             for actor in [ego_vehicle, *sp_vehicles, *sp_walkers]:
                 if actor.is_alive:
