@@ -47,20 +47,141 @@ class CarlaExtractor(object):
         self.world = self.client.get_world()
         self.blueprint_library = self.world.get_blueprint_library()
         self.map = self.world.get_map()
-        self.spawn_manager = CarlaSpawn(carla_client=self.client, delta_seconds=1/fps)
+        self.tm = self.client.get_trafficmanager()
+        self.tm_port = self.tm.get_port()
+        # self.spawn_manager = CarlaSpawn(carla_client=self.client, delta_seconds=1/fps)
         print(colored(f"Successfully connected to CARLA at {host}:{port}", "green"))
 
         self.sensor_width, self.sensor_height = sensor_width, sensor_height
         self.fps = fps
-        self.sensor_list = []
         self.collision_info = {}
 
     def set_weather(self, weather_option):
         weather = carla.WeatherParameters(*weather_option)
         self.world.set_weather(weather)
 
+    def _create_vehicle_blueprint(self, actor_filter, color=None, number_of_wheels=None):
+        """Create the blueprint for a specific actor type.
+
+        Args:
+          actor_filter: a string indicating the actor type, e.g, 'vehicle.lincoln*'.
+
+        Returns:
+          bp: the blueprint object of carla.
+        """
+        if number_of_wheels is None:
+            number_of_wheels = [4]
+        blueprints = self.blueprint_library.filter(actor_filter)
+        blueprint_library = []
+        for nw in number_of_wheels:
+            blueprint_library = blueprint_library + [x for x in blueprints if
+                                                     int(x.get_attribute('number_of_wheels')) == nw]
+        bp = random.choice(blueprint_library)
+        if bp.has_attribute('color'):
+            if not color:
+                color = random.choice(bp.get_attribute('color').recommended_values)
+            bp.set_attribute('color', color)
+        return bp
+
+    def _try_spawn_random_vehicle_at(self, transform):
+        """Try to spawn a surrounding vehicle at specific transform with random blueprint.
+
+        Args:
+          transform: the carla transform object.
+
+        Returns:
+          Bool indicating whether the spawn is successful.
+        """
+        blueprint = self._create_vehicle_blueprint('vehicle.*', number_of_wheels=[4])
+        blueprint.set_attribute('role_name', 'autopilot')
+        vehicle = self.world.try_spawn_actor(blueprint, transform)
+        return vehicle
+
+    def _try_spawn_random_walker_at(self, transform):
+        """Try to spawn a walker at specific transform with random blueprint.
+
+        Args:
+          transform: the carla transform object.
+
+        Returns:
+          Bool indicating whether the spawn is successful.
+        """
+        walker_bp = random.choice(self.world.get_blueprint_library().filter('walker.*'))
+        # set as not invencible
+        if walker_bp.has_attribute('is_invincible'):
+            walker_bp.set_attribute('is_invincible', 'false')
+        walker_actor = self.world.try_spawn_actor(walker_bp, transform)
+
+        walker_controller_actor = None
+        if walker_actor is not None:
+            walker_controller_bp = self.world.get_blueprint_library().find('controller.ai.walker')
+            walker_controller_actor = self.world.spawn_actor(walker_controller_bp, carla.Transform(), walker_actor)
+            # start walker
+            walker_controller_actor.start()
+            # set walk to random point
+            walker_controller_actor.go_to_location(self.world.get_random_location_from_navigation())
+            # random max speed
+            walker_controller_actor.set_max_speed(1 + random.random())  # max speed between 1 and 2 (default is 1.4 m/s)
+        return walker_actor, walker_controller_actor
+
     def set_actors(self, vehicles: int, walkers: int):
-        self.spawn_manager.spawn_actors(vehicles, walkers)
+
+        spawned_vehicles, spawned_walkers, spawned_walker_controllers = [], [], []
+        vehicle_spawn_points = list(self.world.get_map().get_spawn_points())
+
+        print(colored("spawning vehicles", "white"))
+        # Spawn surrounding vehicles
+        random.shuffle(vehicle_spawn_points)
+        count = vehicles
+        if count > 0:
+            for spawn_point in vehicle_spawn_points:
+                random_vehicle = self._try_spawn_random_vehicle_at(spawn_point)
+                if random_vehicle:
+                    spawned_vehicles.append(random_vehicle)
+                    count -= 1
+                if count <= 0:
+                    break
+        while count > 0:
+            random_vehicle = self._try_spawn_random_vehicle_at(random.choice(vehicle_spawn_points))
+            if random_vehicle:
+                spawned_vehicles.append(random_vehicle)
+                count -= 1
+
+        print(colored("spawning walkers", "white"))
+        # Spawn pedestrians
+        walker_spawn_points = []
+        for i in range(walkers):
+            spawn_point = carla.Transform()
+            loc = self.world.get_random_location_from_navigation()
+            if loc:
+                spawn_point.location = loc
+                walker_spawn_points.append(spawn_point)
+
+        random.shuffle(walker_spawn_points)
+        count = walkers
+        if count > 0:
+            for spawn_point in walker_spawn_points:
+                random_walker, random_walker_controller = self._try_spawn_random_walker_at(spawn_point)
+                if random_walker and random_walker_controller:
+                    spawned_walkers.append(random_walker)
+                    spawned_walker_controllers.append(random_walker_controller)
+                    count -= 1
+                if count <= 0:
+                    break
+        max_tries = count * 2
+        while count > 0 and max_tries > 0:
+            random_walker, random_walker_controller = self._try_spawn_random_walker_at(random.choice(walker_spawn_points))
+            if random_walker and random_walker_controller:
+                spawned_walkers.append(random_walker)
+                spawned_walker_controllers.append(random_walker_controller)
+                count -= 1
+            max_tries -= 1
+
+        print(colored("activating autopilots", "white"))
+        # set autopilot for all the vehicles
+        for v in spawned_vehicles:
+            v.set_autopilot(True, self.tm_port)
+        return spawned_vehicles, spawned_walkers, spawned_walker_controllers
 
     def set_camera(self, vehicle, sensor_width: int, sensor_height: int, fov: int) -> object:
         bp = self.blueprint_library.find('sensor.camera.rgb')
@@ -203,23 +324,35 @@ class CarlaExtractor(object):
         Use the ego to record all the data in one episode. Returns the data needed for hdf5 saver and json saver.
         """
 
+        # sync mode off before spawning
+        settings = self.world.get_settings()
+        settings.synchronous_mode = False
+        self.world.apply_settings(settings)
+
+        # spawn ego vehicle, surrounding vehicles and surrounding walkers
         ego_agent, ego_vehicle, info = self.set_ego(noisy=noisy)
         destination = info['destination']
-        # SPAWN SURROUNDING VEHICLES AND PEDESTRIANS HERE
+        sp_vehicles, sp_walkers, sp_walker_controllers = self.set_actors(vehicles=vehicles, walkers=walkers)
+        print(colored(f"spawned {len(sp_vehicles)} vehicles and {len(sp_walkers)} walkers", "white"))
         sensors, collision_sensor = self.set_sensors(ego_vehicle, self.sensor_width, self.sensor_height)
-        media, meta = [], []
 
+        # sync mode on after spawning
+        settings.synchronous_mode = True
+        settings.fixed_delta_seconds = 1 / self.fps
+        self.tm.set_synchronous_mode(True)
+        self.world.apply_settings(settings)
+
+        media, meta = [], []
         try:
-            self.set_actors(vehicles=vehicles, walkers=walkers)
             if debug:
                 self.show_route(ego_vehicle.get_location(), destination.location)
-            desc = "Frame: {}/{} SPEED={:.2f} HLC={} LANE_DISTANCE={:2f} LANE_ORIENTATION={:.2F}"
-            pbar = tqdm(initial=0, leave=False, total=max_frames, desc=desc.format(0, max_frames, 0, 0, 0, 0))
+            desc = "Frame: {}/{} SPEED={:.2f} HLC={} TL={} LANE_DISTANCE={:.2f} LANE_ORIENTATION={:.2f}"
+            pbar = tqdm(initial=0, leave=False, total=max_frames, desc=desc.format(0, max_frames, 0, 0, 0, 0, 0))
 
             print(colored("[*] Initializing extraction", "white"))
             with CarlaSyncMode(self.world, *sensors, fps=self.fps) as sync_mode:
                 # warm-up, put the ego vehicle in movement
-                self.skip_frames(ego_agent, ego_vehicle, 15, sync_mode)
+                self.skip_frames(ego_agent, ego_vehicle, 30, sync_mode)
 
                 frames = 0
                 while frames <= max_frames:
@@ -246,7 +379,7 @@ class CarlaExtractor(object):
                     # preparing next frame
                     frames += 1
                     pbar.desc = desc.format(frames, max_frames, ego_info["speed"], ego_info["command"],
-                                            ego_info["lane_distance"], ego_info["lane_orientation"])
+                                            ego_info["tl_state"], ego_info["lane_distance"], ego_info["lane_orientation"])
                     pbar.update(1)
                     self.update_spectator(ego_vehicle)
 
@@ -263,17 +396,17 @@ class CarlaExtractor(object):
                 pbar.close()
             print(colored("[+] Extraction completed successfully, exiting sync mode...", "green"))
         finally:
-
             # destroy sensors, ego vehicle and social actors
+            print(colored("destroying sensors", "white"))
             for sensor in [*sensors, collision_sensor]:
                 if sensor.is_listening:
                     sensor.stop()
                 if sensor.is_alive:
                     sensor.destroy()
-            if ego_vehicle.is_alive:
-                ego_vehicle.destroy()
-            self.spawn_manager.destroy_actors()
-
+            print(colored("destroying vehicles and walkers", "white"))
+            for actor in [ego_vehicle, *sp_vehicles, *sp_walkers]:
+                if actor.is_alive:
+                    actor.destroy()
         return media, meta
 
     def skip_frames(self, ego_agent, ego_vehicle, skip_frames, sync_mode):

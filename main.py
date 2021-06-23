@@ -37,7 +37,7 @@ import traceback
 import wandb
 
 
-wandb.init(project='tsad', entity='autonomous-driving')
+# wandb.init(project='tsad', entity='autonomous-driving')
 
 
 def run(args_):
@@ -66,7 +66,7 @@ def run(args_):
         print(colored("Starting the extraction...", "cyan"))
         for iteration in range(args_.n):
             for weather in weather_hooks:
-                print(colored(f"weather: {weather.__name__}", "white"))
+                print(colored(f"\nweather: {weather.__name__}", "white"))
                 engine.set_weather(weather())
                 run_id = str(uuid.uuid4())
 
